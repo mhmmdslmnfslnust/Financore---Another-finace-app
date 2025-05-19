@@ -8,6 +8,7 @@ function FinancialGoals() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
+  const [newGoal, setNewGoal] = useState({ title: '', amount: '', type: 'savings' });
   
   const { currentUser } = useContext(AuthContext);
 
@@ -31,29 +32,42 @@ function FinancialGoals() {
     loadGoals();
   }, []);
 
-  // Handle goal creation - ensure it saves to MongoDB
+  // Create a new goal with error handling
   const handleCreateGoal = async (goalData) => {
     try {
-      setIsSubmitting(true);
-      setError(null);
+      console.log('Creating goal:', goalData);
       
-      // Log the request being sent
-      console.log('Sending goal to API:', goalData);
+      // Check if token exists
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.error('No auth token found in localStorage');
+        alert('You must be logged in to create goals. Please log in again.');
+        return false;
+      }
       
+      console.log('Auth token present:', token.substring(0, 20) + '...');
+      
+      // Attempt to create the goal
       const response = await goalService.add(goalData);
-      console.log('API Response:', response.data);
+      console.log('Goal creation response:', response);
       
-      // Update state with the returned goal (which includes MongoDB _id)
-      setGoals(prevGoals => [...prevGoals, response.data.data]);
-      setIsSubmitting(false);
+      // If successful, update local state
+      const newGoalWithId = response.data.data;
+      setGoals(prevGoals => [...prevGoals, newGoalWithId]);
       
       // Show success message
       alert('Goal successfully created!');
       return true;
     } catch (error) {
-      console.error('Error creating goal:', error);
-      setError('Failed to create goal: ' + (error.response?.data?.error || error.message));
-      setIsSubmitting(false);
+      console.error('Failed to create goal:', error);
+      
+      // Check for authentication errors
+      if (error.response && error.response.status === 401) {
+        alert('Authentication failed. Please log in again.');
+      } else {
+        alert('Failed to create goal. Please try again.');
+      }
+      
       return false;
     }
   };
@@ -114,7 +128,7 @@ function FinancialGoals() {
       
       {error && <div className="error">{error}</div>}
       
-      <form className="goal-form" onSubmit={handleCreateGoal}>
+      <form className="goal-form" onSubmit={(e) => { e.preventDefault(); handleCreateGoal(newGoal); }}>
         <input 
           type="text" 
           placeholder="Goal title" 
@@ -139,7 +153,9 @@ function FinancialGoals() {
           <option value="investment">Investment</option>
         </select>
         
-        <button type="submit">Add Goal</button>
+        <button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? 'Adding Goal...' : 'Add Goal'}
+        </button>
       </form>
       
       <div className="goals-list">
@@ -152,7 +168,9 @@ function FinancialGoals() {
               <p>Amount: ${goal.amount}</p>
               <p>Type: {goal.type}</p>
               
-              <button onClick={() => handleDeleteGoal(goal._id)}>Delete Goal</button>
+              <button onClick={() => handleDeleteGoal(goal._id)} disabled={isSubmitting}>
+                {isSubmitting ? 'Deleting...' : 'Delete Goal'}
+              </button>
             </div>
           ))
         )}

@@ -3,10 +3,11 @@ const Goal = require('../models/Goal');
 // Get all goals for the authenticated user
 exports.getGoals = async (req, res) => {
   try {
-    console.log('Getting goals for user:', req.user);
+    console.log('Getting goals for user ID:', req.user.id);
     
-    // Find only goals that belong to the current user
+    // Find goals with the current user's ID
     const goals = await Goal.find({ user: req.user.id }).sort({ createdAt: -1 });
+    
     console.log(`Found ${goals.length} goals for user ${req.user.id}`);
     
     res.status(200).json({
@@ -15,10 +16,10 @@ exports.getGoals = async (req, res) => {
       data: goals
     });
   } catch (error) {
-    console.error('Error getting goals:', error);
+    console.error('Error in getGoals controller:', error);
     res.status(500).json({
       success: false,
-      error: error.message
+      error: 'Server error'
     });
   }
 };
@@ -26,38 +27,28 @@ exports.getGoals = async (req, res) => {
 // Create a new goal
 exports.createGoal = async (req, res) => {
   try {
-    console.log('Creating goal for user:', req.user);
+    console.log('Create goal request from user:', req.user.id);
     console.log('Goal data received:', req.body);
     
-    // Add user id to the request body to associate the goal with the user
+    // Add user id to goal data
     req.body.user = req.user.id;
     
-    console.log('Modified goal data with user ID:', req.body);
-    
-    // Validate required fields
-    const { title, targetAmount, category } = req.body;
-    if (!title || !targetAmount || !category) {
-      console.error('Validation error: Missing required fields');
-      return res.status(400).json({
-        success: false,
-        error: 'Please provide title, targetAmount, and category'
-      });
-    }
-    
-    // Create the goal in the database
+    // Create goal in database
     const goal = await Goal.create(req.body);
-    console.log('Goal created successfully:', goal);
+    
+    console.log('Goal created successfully with ID:', goal._id);
     
     res.status(201).json({
       success: true,
       data: goal
     });
   } catch (error) {
-    console.error('Error creating goal:', error);
+    console.error('Error in createGoal controller:', error);
     
-    // Check for specific error types
+    // Handle validation errors
     if (error.name === 'ValidationError') {
-      const messages = Object.values(error.errors).map(val => val.message);
+      const messages = Object.values(error.errors).map(err => err.message);
+      
       return res.status(400).json({
         success: false,
         error: messages
@@ -66,17 +57,80 @@ exports.createGoal = async (req, res) => {
     
     res.status(500).json({
       success: false,
-      error: error.message
+      error: 'Server error'
     });
   }
 };
 
 // Update an existing goal
 exports.updateGoal = async (req, res) => {
-  // ...existing code...
+  try {
+    let goal = await Goal.findById(req.params.id);
+    
+    if (!goal) {
+      return res.status(404).json({
+        success: false,
+        error: 'Goal not found'
+      });
+    }
+    
+    // Ensure user owns this goal
+    if (goal.user.toString() !== req.user.id) {
+      return res.status(401).json({
+        success: false,
+        error: 'Not authorized to update this goal'
+      });
+    }
+    
+    goal = await Goal.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true
+    });
+    
+    res.status(200).json({
+      success: true,
+      data: goal
+    });
+  } catch (error) {
+    console.error('Error updating goal:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Server error'
+    });
+  }
 };
 
 // Delete a goal
 exports.deleteGoal = async (req, res) => {
-  // ...existing code...
+  try {
+    const goal = await Goal.findById(req.params.id);
+    
+    if (!goal) {
+      return res.status(404).json({
+        success: false,
+        error: 'Goal not found'
+      });
+    }
+    
+    // Ensure user owns this goal
+    if (goal.user.toString() !== req.user.id) {
+      return res.status(401).json({
+        success: false,
+        error: 'Not authorized to delete this goal'
+      });
+    }
+    
+    await goal.deleteOne();
+    
+    res.status(200).json({
+      success: true,
+      data: {}
+    });
+  } catch (error) {
+    console.error('Error deleting goal:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Server error'
+    });
+  }
 };

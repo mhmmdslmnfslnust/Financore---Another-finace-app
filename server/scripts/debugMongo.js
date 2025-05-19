@@ -27,27 +27,56 @@ mongoose
       if (collections.some(col => col.name === 'users')) {
         const userCount = await mongoose.connection.db.collection('users').countDocuments();
         console.log(`\nUser collection has ${userCount} documents`);
+        
+        // Show user details to verify authentication
+        const users = await mongoose.connection.db.collection('users').find({}).toArray();
+        users.forEach(user => {
+          console.log(`\nUser ID: ${user._id}`);
+          console.log(`Username: ${user.username}`);
+          console.log(`Email: ${user.email}`);
+        });
       }
       
       // If goals collection exists, count documents
       if (collections.some(col => col.name === 'goals')) {
         const goalCount = await mongoose.connection.db.collection('goals').countDocuments();
-        console.log(`Goal collection has ${goalCount} documents`);
+        console.log(`\nGoal collection has ${goalCount} documents`);
         
-        // Show a sample goal if available
+        // Show all goals for detailed analysis
         if (goalCount > 0) {
-          const sampleGoal = await mongoose.connection.db.collection('goals').findOne();
-          console.log('\nSample goal document:');
-          console.log(JSON.stringify(sampleGoal, null, 2));
+          const goals = await mongoose.connection.db.collection('goals').find({}).toArray();
+          console.log('\nAll goals in collection:');
+          goals.forEach(goal => {
+            console.log(`\nGoal ID: ${goal._id}`);
+            console.log(`Title: ${goal.title}`);
+            console.log(`User ID: ${goal.user}`);
+            console.log(`Target Amount: ${goal.targetAmount}`);
+            console.log(`Created: ${goal.createdAt}`);
+          });
+        } else {
+          console.log('No goals found. Check if the user is correctly adding goals.');
         }
       } else {
         console.log('\nGoals collection does not exist yet!');
       }
       
-      // If transactions collection exists, count documents
+      // Also show detailed transaction info
       if (collections.some(col => col.name === 'transactions')) {
         const transCount = await mongoose.connection.db.collection('transactions').countDocuments();
-        console.log(`Transaction collection has ${transCount} documents`);
+        console.log(`\nTransaction collection has ${transCount} documents`);
+        
+        if (transCount > 0) {
+          const transactions = await mongoose.connection.db.collection('transactions')
+            .find({}).limit(5).toArray();
+          console.log('\nRecent transactions:');
+          transactions.forEach(trans => {
+            console.log(`\nTransaction ID: ${trans._id}`);
+            console.log(`User ID: ${trans.user}`);
+            console.log(`Amount: ${trans.amount}`);
+            console.log(`Type: ${trans.type}`);
+            console.log(`Date: ${trans.date}`);
+          });
+        }
       }
     } catch (error) {
       console.error('Error checking collections:', error);

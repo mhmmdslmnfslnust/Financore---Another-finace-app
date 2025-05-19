@@ -9,12 +9,18 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Set auth token
+  // Set auth token for API calls - update to properly store token
   const setAuthToken = (token) => {
     if (token) {
+      // Store token in localStorage
       localStorage.setItem('token', token);
+      
+      // Log token storage for debugging
+      console.log('Token stored in localStorage:', token.substring(0, 20) + '...');
     } else {
+      // Remove token from localStorage
       localStorage.removeItem('token');
+      console.log('Token removed from localStorage');
     }
   };
 
@@ -40,23 +46,42 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Login user
+  // Login user - ensure token is stored correctly
   const login = async (email, password) => {
     try {
       setError(null);
       setLoading(true);
       
-      const response = await authService.login(email, password);
-      const { token, user } = response.data;
+      // Log the login attempt
+      console.log('Attempting login for:', email);
       
+      const data = await apiRequest('/api/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ email, password })
+      });
+      
+      // Log the login response for debugging
+      console.log('Login response received:', data);
+      
+      const { token, user } = data;
+      
+      // Make sure token exists
+      if (!token) {
+        console.error('No token returned from login');
+        throw new Error('Login failed - no token received');
+      }
+      
+      // Store token
       setAuthToken(token);
       setToken(token);
       setCurrentUser(user);
       setLoading(false);
       
+      console.log('Login successful for:', user.username);
       return user;
     } catch (err) {
-      setError(err.response?.data?.error || 'Login failed');
+      console.error('Login error:', err);
+      setError(err.message || 'Login failed');
       setLoading(false);
       throw err;
     }

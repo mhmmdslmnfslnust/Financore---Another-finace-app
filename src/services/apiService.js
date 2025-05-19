@@ -16,6 +16,9 @@ apiClient.interceptors.request.use(
     const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+      console.log(`Adding auth token to ${config.url} request`);
+    } else {
+      console.warn(`No auth token available for ${config.url} request`);
     }
     // Log outgoing requests for debugging
     console.log('API Request:', {
@@ -26,7 +29,10 @@ apiClient.interceptors.request.use(
     });
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => {
+    console.error('Request interceptor error:', error);
+    return Promise.reject(error);
+  }
 );
 
 // Add response interceptor for better error handling
