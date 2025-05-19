@@ -7,6 +7,11 @@
   align-items: center;
   padding: 0 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
 }
 
 .navbar-left {
@@ -55,4 +60,38 @@
 
 .user-info {
   font-weight: 500;
+}
+
+/* Add this to create proper layout with fixed navbar */
+.main-content-container {
+  margin-top: 60px; /* Equal to navbar height */
+  display: flex;
+}
+
+/* This ensures sidebar starts right after navbar */
+.sidebar-container {
+  height: calc(100vh - 60px);
+  top: 60px;
+  position: fixed;
+}
+
+/* Ensure main content has proper margins */
+.page-content {
+  margin-left: 240px; /* Adjust based on your sidebar width */
+  width: 100%;
+  padding-top: 20px; /* Add padding to push content down */
+}
+
+/* Ensure headings aren't cut off */
+.page-content h1:first-child,
+.page-content h2:first-child,
+.page-content h3:first-child,
+.page-content .heading-container:first-child {
+  margin-top: 20px; /* Additional space for headings */
+  padding-top: 10px;
+}
+
+/* Ensure all page elements have proper spacing from navbar */
+body {
+  padding-top: 60px; /* Same as navbar height */
 }
