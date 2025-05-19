@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financore Authentication Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        pre {
+            background-color: #f1f1f1;
+            padding: 10px;
+            border-radius: 4px;
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Financore Authentication Test</h1>
+    
+    <div class="card">
+        <h2>1. Check LocalStorage Token</h2>
+        <button id="checkTokenBtn">Check Token</button>
+        <pre id="tokenResult">Results will appear here...</pre>
+    </div>
+    
+    <div class="card">
+        <h2>2. Test API Connectivity</h2>
+        <button id="testApiBtn">Test API</button>
+        <pre id="apiResult">Results will appear here...</pre>
+    </div>
+    
+    <div class="card">
+        <h2>3. Test Authentication</h2>
+        <button id="testAuthBtn">Test Auth</button>
+        <pre id="authResult">Results will appear here...</pre>
+    </div>
+    
+    <div class="card">
+        <h2>4. Manual Token Test</h2>
+        <input type="text" id="tokenInput" placeholder="Paste token here">
+        <button id="testManualTokenBtn">Test Manual Token</button>
+        <pre id="manualResult">Results will appear here...</pre>
+    </div>
+    
+    <script>
+        // Check token in localStorage
+        document.getElementById('checkTokenBtn').addEventListener('click', function() {
+            const token = localStorage.getItem('token');
+            let result = '';
+            
+            if (token) {
+                result = `Token found in localStorage!\nToken preview: ${token.substring(0, 20)}...\n`;
+                
+                try {
+                    // Try to decode the payload part
+                    const parts = token.split('.');
+                    if (parts.length === 3) {
+                        const payload = JSON.parse(atob(parts[1]));
+                        result += `\nDecoded payload: ${JSON.stringify(payload, null, 2)}`;
+                    }
+                } catch (e) {
+                    result += `\nError decoding token: ${e.message}`;
+                }
+            } else {
+                result = 'No token found in localStorage!';
+            }
+            
+            document.getElementById('tokenResult').textContent = result;
+        });
+        
+        // Test API connectivity
+        document.getElementById('testApiBtn').addEventListener('click', async function() {
+            try {
+                const response = await fetch('/api/debug');
+                const data = await response.json();
+                document.getElementById('apiResult').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('apiResult').textContent = `Error: ${error.message}`;
+            }
+        });
+        
+        // Test authentication
+        document.getElementById('testAuthBtn').addEventListener('click', async function() {
+            try {
+                const token = localStorage.getItem('token');
+                const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+                
+                const response = await fetch('/api/debug/auth-test', {
+                    headers: headers
+                });
+                
+                const data = await response.json();
+                document.getElementById('authResult').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('authResult').textContent = `Error: ${error.message}`;
+            }
+        });
+        
+        // Test with manual token
+        document.getElementById('testManualTokenBtn').addEventListener('click', async function() {
+            try {
+                const token = document.getElementById('tokenInput').value.trim();
+                if (!token) {
+                    document.getElementById('manualResult').textContent = 'Please enter a token';
+                    return;
+                }
+                
+                const response = await fetch('/api/debug/auth-test', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                const data = await response.json();
+                document.getElementById('manualResult').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('manualResult').textContent = `Error: ${error.message}`;
+            }
+        });
+    </script>
+</body>
+</html>
