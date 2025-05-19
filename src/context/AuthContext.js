@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { mockAuthService } from '../services/mockAuthService';
+import { authService } from '../services/apiService';
 
 export const AuthContext = createContext();
 
@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Set auth token for API calls
+  // Set auth token
   const setAuthToken = (token) => {
     if (token) {
       localStorage.setItem('token', token);
@@ -24,10 +24,9 @@ export const AuthProvider = ({ children }) => {
       setError(null);
       setLoading(true);
       
-      // Use mock service instead of API request
-      const data = await mockAuthService.register(userData);
+      const response = await authService.register(userData);
+      const { token, user } = response.data;
       
-      const { token, user } = data;
       setAuthToken(token);
       setToken(token);
       setCurrentUser(user);
@@ -35,7 +34,7 @@ export const AuthProvider = ({ children }) => {
       
       return user;
     } catch (err) {
-      setError(err.message || 'Registration failed');
+      setError(err.response?.data?.error || 'Registration failed');
       setLoading(false);
       throw err;
     }
@@ -47,10 +46,9 @@ export const AuthProvider = ({ children }) => {
       setError(null);
       setLoading(true);
       
-      // Use mock service instead of API request
-      const data = await mockAuthService.login(email, password);
+      const response = await authService.login(email, password);
+      const { token, user } = response.data;
       
-      const { token, user } = data;
       setAuthToken(token);
       setToken(token);
       setCurrentUser(user);
@@ -58,7 +56,7 @@ export const AuthProvider = ({ children }) => {
       
       return user;
     } catch (err) {
-      setError(err.message || 'Login failed');
+      setError(err.response?.data?.error || 'Login failed');
       setLoading(false);
       throw err;
     }
@@ -75,11 +73,9 @@ export const AuthProvider = ({ children }) => {
   const checkUserAuthentication = async () => {
     if (token) {
       try {
-        // Use mock service instead of API request
-        const data = await mockAuthService.getMe(token);
-        setCurrentUser(data.data);
+        const response = await authService.getMe();
+        setCurrentUser(response.data.data);
       } catch (err) {
-        // Token might be invalid, remove it
         setAuthToken(null);
         setToken(null);
         setCurrentUser(null);
