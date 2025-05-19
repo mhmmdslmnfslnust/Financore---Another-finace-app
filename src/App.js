@@ -13,6 +13,12 @@ import './App.css';
 import DatabaseService from './patterns/singleton/DatabaseService';
 import { BudgetingState } from './patterns/state/FinancialState';
 
+// Add these imports
+import { AuthProvider } from './context/AuthContext';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import ProtectedRoute from './components/ProtectedRoute';
+
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   
@@ -23,24 +29,65 @@ function App() {
   }, []);
 
   return (
-    <Router>
-      <div className="app">
-        <Navbar toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
-        <div className="main-container">
-          <Sidebar isOpen={sidebarOpen} />
-          <div className={`content ${sidebarOpen ? 'content-with-sidebar' : ''}`}>
-            <Routes>
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/transactions" element={<Transactions />} />
-              <Route path="/goals" element={<Goals />} />
-              <Route path="/recommendations" element={<Recommendations />} />
-              <Route path="/reports" element={<Reports />} />
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            </Routes>
+    <AuthProvider>
+      <Router>
+        <div className="app">
+          <Navbar toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+          <div className="main-container">
+            <Sidebar isOpen={sidebarOpen} />
+            <div className={`content ${sidebarOpen ? 'content-with-sidebar' : ''}`}>
+              <Routes>
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                
+                {/* Protected routes */}
+                <Route 
+                  path="/dashboard" 
+                  element={
+                    <ProtectedRoute>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/transactions" 
+                  element={
+                    <ProtectedRoute>
+                      <Transactions />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/goals" 
+                  element={
+                    <ProtectedRoute>
+                      <Goals />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/recommendations" 
+                  element={
+                    <ProtectedRoute>
+                      <Recommendations />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/reports" 
+                  element={
+                    <ProtectedRoute>
+                      <Reports />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              </Routes>
+            </div>
           </div>
         </div>
-      </div>
-    </Router>
+      </Router>
+    </AuthProvider>
   );
 }
 
