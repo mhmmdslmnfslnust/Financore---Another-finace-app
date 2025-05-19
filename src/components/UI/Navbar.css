@@ -95,3 +95,21 @@
 body {
   padding-top: 60px; /* Same as navbar height */
 }
+
+/* Fix for recommendation section appearing above sidebar on mobile */
+.recommendation-content {
+  position: relative;
+  z-index: 1; /* Very low z-index to ensure it stays behind sidebar */
+}
+
+.recommendation-list,
+.recommendation-item {
+  position: relative;
+  z-index: 1;
+}
+
+/* Ensure the sidebar has proper z-index */
+.sidebar-container, 
+.sidebar {
+  z-index: 950; /* High enough to be above content but below navbar */
+}
