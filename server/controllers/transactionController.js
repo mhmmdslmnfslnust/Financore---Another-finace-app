@@ -1,8 +1,9 @@
 const Transaction = require('../models/Transaction');
 
-// Get all transactions for a user
+// Get all transactions for the authenticated user
 exports.getTransactions = async (req, res) => {
   try {
+    // Find only transactions for current user
     const transactions = await Transaction.find({ user: req.user.id }).sort({ date: -1 });
     
     res.status(200).json({
@@ -11,9 +12,10 @@ exports.getTransactions = async (req, res) => {
       data: transactions
     });
   } catch (error) {
+    console.error('Error getting transactions:', error);
     res.status(500).json({
       success: false,
-      error: error.message
+      error: 'Server error'
     });
   }
 };
