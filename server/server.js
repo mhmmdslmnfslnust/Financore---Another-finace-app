@@ -7,6 +7,7 @@ const authRoutes = require('./routes/authRoutes');
 const transactionRoutes = require('./routes/transactionRoutes');
 const goalRoutes = require('./routes/goalRoutes');
 const budgetRoutes = require('./routes/budgetRoutes');
+const testRoutes = require('./routes/testRoute');
 
 // Load environment variables - update path to make sure it finds the .env file
 dotenv.config({ path: path.join(__dirname, '.env') });
@@ -20,6 +21,16 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Add request logging middleware before routes
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+  console.log('Headers:', req.headers.authorization ? 
+    { ...req.headers, authorization: 'Bearer [HIDDEN]' } : 
+    req.headers);
+  console.log('Body:', req.body);
+  next();
+});
+
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB Connected'))
@@ -30,6 +41,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/transactions', transactionRoutes);
 app.use('/api/goals', goalRoutes);
 app.use('/api/budgets', budgetRoutes);
+app.use('/api/test', testRoutes); // Add test routes
 
 // Error handler
 app.use((err, req, res, next) => {

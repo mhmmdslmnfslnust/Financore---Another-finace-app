@@ -10,16 +10,54 @@ const apiClient = axios.create({
   }
 });
 
-// Add a request interceptor to include auth token with every request
+// Interceptor to add token to requests
 apiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    // Log outgoing requests for debugging
+    console.log('API Request:', {
+      url: config.url,
+      method: config.method,
+      headers: config.headers,
+      data: config.data
+    });
     return config;
   },
   (error) => Promise.reject(error)
+);
+
+// Add response interceptor for better error handling
+apiClient.interceptors.response.use(
+  (response) => {
+    // Log successful responses for debugging
+    console.log('API Response:', {
+      url: response.config.url,
+      status: response.status,
+      data: response.data
+    });
+    return response;
+  },
+  (error) => {
+    // Log error responses for debugging
+    console.error('API Error:', {
+      url: error.config?.url,
+      status: error.response?.status,
+      data: error.response?.data,
+      message: error.message
+    });
+    
+    // Handle authentication errors
+    if (error.response?.status === 401) {
+      // Clear token and redirect to login
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+    }
+    
+    return Promise.reject(error);
+  }
 );
 
 export const authService = {

@@ -1,24 +1,44 @@
 const express = require('express');
-const { 
-  getGoals, 
-  createGoal, 
-  updateGoal, 
-  deleteGoal 
-} = require('../controllers/goalController');
 const { protect } = require('../middleware/auth');
 const router = express.Router();
 
-// All goal routes require authentication
-router.use(protect);
+// Since we haven't implemented the goal controller yet, let's create placeholder routes
+router.use(protect); // All goal routes require authentication
 
-// Get all goals & Create new goal
-router.route('/')
-  .get(getGoals)
-  .post(createGoal);
+// Get all goals for a user
+router.get('/', (req, res) => {
+  res.status(200).json({
+    success: true,
+    data: [],
+    message: 'Goal controller not yet implemented'
+  });
+});
 
-// Update & Delete goal
-router.route('/:id')
-  .put(updateGoal)
-  .delete(deleteGoal);
+// Add a new goal
+router.post('/', (req, res) => {
+  res.status(201).json({
+    success: true,
+    data: {},
+    message: 'Goal controller not yet implemented'
+  });
+});
+
+// Update a goal
+router.put('/:id', (req, res) => {
+  res.status(200).json({
+    success: true,
+    data: {},
+    message: 'Goal controller not yet implemented'
+  });
+});
+
+// Delete a goal
+router.delete('/:id', (req, res) => {
+  res.status(200).json({
+    success: true,
+    data: {},
+    message: 'Goal controller not yet implemented'
+  });
+});
 
 module.exports = router;
