@@ -185,3 +185,38 @@ body {
     padding-right: 10px;
   }
 }
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+}
+
+.user-info-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.login-btn, .logout-btn {
+  background-color: transparent;
+  border: 1px solid white;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.login-btn:hover, .logout-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.logout-btn {
+  border-color: #ff6b6b;
+  color: #ff6b6b;
+}
+
+.logout-btn:hover {
+  background-color: rgba(255, 107, 107, 0.1);
+}
