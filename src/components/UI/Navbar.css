@@ -113,3 +113,34 @@ body {
 .sidebar {
   z-index: 950; /* High enough to be above content but below navbar */
 }
+
+/* Fix for financial mode selector on mobile view */
+@media screen and (max-width: 767px) {
+  .financial-mode-selector, 
+  .mode-selection-container,
+  .dashboard-selector {
+    width: 100% !important;
+    max-width: 100%;
+    overflow-x: hidden;
+    padding-left: 5px;
+    padding-right: 5px;
+    box-sizing: border-box;
+  }
+  
+  /* Adjust font size if needed */
+  .financial-mode-option {
+    font-size: 0.9rem;
+  }
+  
+  /* If it's using flexbox, adjust it for mobile */
+  .financial-mode-options {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  /* If it has children that need adjustment */
+  .financial-mode-selector > * {
+    max-width: 100%;
+  }
+}
