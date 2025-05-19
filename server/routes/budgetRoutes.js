@@ -1,44 +1,24 @@
 const express = require('express');
+const { 
+  getBudgets, 
+  createBudget, 
+  updateBudget, 
+  deleteBudget 
+} = require('../controllers/budgetController');
 const { protect } = require('../middleware/auth');
 const router = express.Router();
 
-// Since we haven't implemented the budget controller yet, let's create placeholder routes
-router.use(protect); // All budget routes require authentication
+// All budget routes require authentication
+router.use(protect);
 
-// Get all budgets for a user
-router.get('/', (req, res) => {
-  res.status(200).json({
-    success: true,
-    data: [],
-    message: 'Budget controller not yet implemented'
-  });
-});
+// Get all budgets & Create new budget
+router.route('/')
+  .get(getBudgets)
+  .post(createBudget);
 
-// Add a new budget
-router.post('/', (req, res) => {
-  res.status(201).json({
-    success: true,
-    data: {},
-    message: 'Budget controller not yet implemented'
-  });
-});
-
-// Update a budget
-router.put('/:id', (req, res) => {
-  res.status(200).json({
-    success: true,
-    data: {},
-    message: 'Budget controller not yet implemented'
-  });
-});
-
-// Delete a budget
-router.delete('/:id', (req, res) => {
-  res.status(200).json({
-    success: true,
-    data: {},
-    message: 'Budget controller not yet implemented'
-  });
-});
+// Update & Delete budget
+router.route('/:id')
+  .put(updateBudget)
+  .delete(deleteBudget);
 
 module.exports = router;
