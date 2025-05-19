@@ -86,3 +86,37 @@ The system is designed to be easily extended with:
 - More sophisticated recommendation algorithms
 - Enhanced reporting capabilities
 - Third-party financial service integrations
+
+## Implementation Details
+
+### Class Diagram
+
+Below is a simplified class diagram showing the key components of the system and their relationships:
+
+```
++----------------------+        +------------------------+
+|   UserManagement     |        |  TransactionManagement |
++----------------------+        +------------------------+
+| - userService        |        | - transactionService   |
+| - profileComponent   |        | - categoryService      |
++----------------------+        +------------------------+
+          |                               |
+          |                               |
+          |                               |
++----------------------+        +------------------------+
+|   AccountManagement  |        |      GoalTracking      |
++----------------------+        +------------------------+
+| - accountService     |        | - goalService          |
+| - budgetComponent    |        | - progressTracker      |
++----------------------+        +------------------------+
+          |                               |
+          |                               |
+          |                               |
++----------------------+        +------------------------+
+|   ReportingSystem    |        |  RecommendationEngine  |
++----------------------+        +------------------------+
+| - reportService      |        | - recommendationService |
+| - chartComponent     |        | - strategyComponent     |
++----------------------+        +------------------------+
+```
+
