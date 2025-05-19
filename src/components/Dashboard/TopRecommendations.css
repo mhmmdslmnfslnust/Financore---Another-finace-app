@@ -1,0 +1,53 @@
+.top-recommendations .recommendations-list {
+  list-style: none;
+  padding: 0;
+  margin: 15px 0;
+}
+
+.recommendation-item {
+  padding: 12px 15px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.recommendation-item:last-child {
+  margin-bottom: 0;
+}
+
+.recommendation-item.warning {
+  background-color: #fff3cd;
+  border-left: 4px solid #ffc107;
+}
+
+.recommendation-item.info {
+  background-color: #e3f2fd;
+  border-left: 4px solid #2196F3;
+}
+
+.recommendation-item.tip {
+  background-color: #f1f8e9;
+  border-left: 4px solid #8bc34a;
+}
+
+.recommendation-item.suggestion {
+  background-color: #e8eaf6;
+  border-left: 4px solid #3f51b5;
+}
+
+.recommendation-item.goal {
+  background-color: #e0f2f1;
+  border-left: 4px solid #009688;
+}
+
+.recommendation-item.education {
+  background-color: #f3e5f5;
+  border-left: 4px solid #9c27b0;
+}
+
+.tip {
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  margin: 10px 0;
+}

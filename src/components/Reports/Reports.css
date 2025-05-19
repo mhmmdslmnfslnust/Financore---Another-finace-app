@@ -1,0 +1,38 @@
+.reports-page {
+  padding: 20px;
+}
+
+.reports-page h1 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.chart-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+  gap: 20px;
+}
+
+.chart-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.chart-card.full-width {
+  grid-column: 1 / -1;
+}
+
+.chart-wrapper {
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .chart-container {
+    grid-template-columns: 1fr;
+  }
+}

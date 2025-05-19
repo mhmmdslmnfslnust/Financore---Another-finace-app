@@ -1,0 +1,48 @@
+.financial-summary {
+  background-color: #f8f9fa;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.summary-item {
+  padding: 15px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.summary-item h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: #555;
+}
+
+.summary-item p {
+  margin: 10px 0 0;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.income {
+  background-color: #e8f5e9;
+}
+
+.expenses {
+  background-color: #ffebee;
+}
+
+.balance.positive {
+  background-color: #e3f2fd;
+}
+
+.balance.negative {
+  background-color: #ffecb3;
+}
+
+.savings-rate {
+  background-color: #e0f7fa;
+}

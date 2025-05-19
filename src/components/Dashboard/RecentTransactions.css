@@ -1,0 +1,66 @@
+.recent-transactions .transaction-list {
+  list-style: none;
+  padding: 0;
+  margin: 15px 0;
+}
+
+.transaction-item {
+  display: grid;
+  grid-template-columns: 80px 1fr auto;
+  gap: 10px;
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  align-items: center;
+}
+
+.transaction-item:last-child {
+  border-bottom: none;
+}
+
+.transaction-item.income {
+  border-left: 3px solid #4CAF50;
+}
+
+.transaction-item.expense {
+  border-left: 3px solid #F44336;
+}
+
+.transaction-date {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.transaction-description {
+  font-weight: 500;
+}
+
+.transaction-amount {
+  font-weight: bold;
+}
+
+.income .transaction-amount {
+  color: #4CAF50;
+}
+
+.expense .transaction-amount {
+  color: #F44336;
+}
+
+.view-all {
+  display: block;
+  text-align: center;
+  margin-top: 15px;
+  color: #2196F3;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.view-all:hover {
+  text-decoration: underline;
+}
+
+.no-data {
+  text-align: center;
+  color: #777;
+  margin: 30px 0;
+}

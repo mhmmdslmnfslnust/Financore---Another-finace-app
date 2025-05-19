@@ -1,0 +1,60 @@
+.goals-overview .goals-list {
+  list-style: none;
+  padding: 0;
+  margin: 15px 0;
+}
+
+.goal-item {
+  padding: 15px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.goal-item:last-child {
+  border-bottom: none;
+}
+
+.goal-name {
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.goal-progress-text {
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.goal-progress-bar {
+  height: 8px;
+  background-color: #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 5px;
+}
+
+.goal-progress-fill {
+  height: 100%;
+  background-color: #007bff;
+}
+
+.goal-percentage {
+  text-align: right;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #007bff;
+}
+
+.add-goal-button {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 4px;
+  text-decoration: none;
+  text-align: center;
+}
+
+.add-goal-button:hover {
+  background-color: #0069d9;
+}
