@@ -143,4 +143,45 @@ body {
   .financial-mode-selector > * {
     max-width: 100%;
   }
+  
+  /* Transaction page specific fixes */
+  .transaction-container,
+  .transaction-details,
+  .transaction-list,
+  .transaction-item,
+  .transaction-table {
+    width: 100% !important;
+    max-width: 100%;
+    overflow-x: auto; /* Allow horizontal scrolling only inside the container */
+    box-sizing: border-box;
+  }
+
+  /* For tables, make them responsive */
+  .transaction-table {
+    display: block; /* Changes table from table to block for better mobile handling */
+  }
+
+  /* Adjust font size for better readability on small screens */
+  .transaction-details {
+    font-size: 0.9rem;
+  }
+
+  /* Ensure table cells don't break layout */
+  .transaction-table td, 
+  .transaction-table th {
+    white-space: nowrap;
+    padding: 8px 5px;
+  }
+
+  /* For non-table transaction displays */
+  .transaction-card {
+    padding: 10px 5px;
+    margin-bottom: 10px;
+  }
+
+  /* Add left/right padding to container */
+  .page-content {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
 }
