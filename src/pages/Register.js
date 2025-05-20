@@ -33,10 +33,20 @@ const Register = () => {
     }
 
     try {
+      // Log the registration attempt
+      console.log('Submitting registration form:', { username, email });
+      
+      // Attempt to register
       await register({ username, email, password });
-      navigate('/dashboard'); // Redirect to dashboard on successful registration
+      
+      // If successful, navigate to dashboard
+      navigate('/dashboard');
     } catch (err) {
-      setFormError(error || 'Registration failed. Please try again.');
+      console.error('Registration error in component:', err);
+      
+      // Display the error message from the server or a default message
+      const errorMessage = err.response?.data?.error || err.message || 'Registration failed. Please try again.';
+      setFormError(errorMessage);
     }
   };
 

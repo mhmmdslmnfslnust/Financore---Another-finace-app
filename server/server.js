@@ -17,24 +17,87 @@ console.log('MongoDB URI exists:', !!process.env.MONGO_URI);
 
 const app = express();
 
-// Middleware
-app.use(cors());
-app.use(express.json());
+// Configure CORS - Add this near the top of your Express setup
+app.use(cors({
+  origin: '*', // For testing - allow all origins
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
-// Add request logging middleware
+// Ensure body parsing middleware is properly set up
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
+// Add request debugging - log all incoming requests
 app.use((req, res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
-  console.log('Headers:', req.headers);
-  if (req.body && Object.keys(req.body).length > 0) {
-    console.log('Body:', req.body);
-  }
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
   next();
 });
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('MongoDB Connected'))
-  .catch(err => console.error('MongoDB Connection Error:', err));
+// Add detailed request logging middleware
+app.use((req, res, next) => {
+  const start = Date.now();
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+  
+  // Log request body for POST/PUT but hide passwords
+  if (['POST', 'PUT'].includes(req.method) && req.body) {
+    const sanitizedBody = { ...req.body };
+    if (sanitizedBody.password) sanitizedBody.password = '[HIDDEN]';
+    console.log('Request body:', sanitizedBody);
+  }
+  
+  // Track response
+  const originalSend = res.send;
+  res.send = function(body) {
+    const responseTime = Date.now() - start;
+    console.log(`Response ${res.statusCode} sent in ${responseTime}ms`);
+    
+    // Try to log response body safely
+    try {
+      const parsedBody = JSON.parse(body);
+      const sanitizedResponse = { ...parsedBody };
+      if (sanitizedResponse.token) sanitizedResponse.token = `${sanitizedResponse.token.substring(0, 15)}...`;
+      console.log('Response body:', sanitizedResponse);
+    } catch (e) {
+      // Skip body logging if not JSON
+    }
+    
+    return originalSend.call(this, body);
+  };
+  
+  next();
+});
+
+// Configure MongoDB options with increased timeouts
+const mongooseOptions = {
+  serverSelectionTimeoutMS: 30000,
+  socketTimeoutMS: 45000,
+  connectTimeoutMS: 30000,
+  family: 4  // Force IPv4 (can help with some connection issues)
+};
+
+// Connect to MongoDB with retry logic
+function connectWithRetry(retryCount = 5, delay = 5000) {
+  console.log(`MongoDB connection attempt ${6 - retryCount}`);
+  
+  mongoose.connect(process.env.MONGO_URI, mongooseOptions)
+    .then(() => {
+      console.log('MongoDB Connected Successfully!');
+    })
+    .catch(err => {
+      console.error('MongoDB Connection Error:', err);
+      
+      if (retryCount > 0) {
+        console.log(`Retrying connection in ${delay/1000} seconds...`);
+        setTimeout(() => connectWithRetry(retryCount - 1, delay), delay);
+      } else {
+        console.error('Failed to connect to MongoDB after several attempts');
+      }
+    });
+}
+
+// Start connection process with retry
+connectWithRetry();
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -43,20 +106,12 @@ app.use('/api/goals', goalRoutes);
 app.use('/api/budgets', budgetRoutes);
 app.use('/api/test', testRoutes); // Add test routes
 
-// Add a debug route that doesn't require auth
+// Add a simple debug endpoint
 app.get('/api/debug', (req, res) => {
-  res.status(200).json({
+  res.json({
     success: true,
-    message: 'API is working',
-    apiEndpoints: [
-      '/api/auth/register',
-      '/api/auth/login',
-      '/api/auth/me',
-      '/api/goals',
-      '/api/transactions',
-      '/api/budgets',
-      '/api/debug/auth-test'
-    ]
+    message: 'API server is working',
+    timestamp: new Date().toISOString()
   });
 });
 
@@ -108,10 +163,13 @@ app.get('/api/debug/auth-test', async (req, res) => {
   }
 });
 
-// Error handler
+// Add an error handler for uncaught exceptions
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Server error' });
+  console.error('Server error:', err);
+  res.status(500).json({
+    success: false,
+    error: 'Server error'
+  });
 });
 
 const PORT = process.env.PORT || 5000;

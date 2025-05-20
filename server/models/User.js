@@ -42,9 +42,18 @@ userSchema.pre('save', async function(next) {
   next();
 });
 
-// Compare password method
+// Compare password method - fix if there are issues
 userSchema.methods.comparePassword = async function(candidatePassword) {
-  return await bcrypt.compare(candidatePassword, this.password);
+  try {
+    // Debug log to see if this is being called
+    console.log('Comparing passwords for user:', this._id);
+    const isMatch = await bcrypt.compare(candidatePassword, this.password);
+    console.log('Password match result:', isMatch);
+    return isMatch;
+  } catch (error) {
+    console.error('Password comparison error:', error);
+    throw error; // Re-throw to be handled by the caller
+  }
 };
 
 // Generate JWT token

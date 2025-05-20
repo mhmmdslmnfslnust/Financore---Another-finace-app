@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Set auth token for API calls - update to properly store token
+  // Set auth token for API calls
   const setAuthToken = (token) => {
     if (token) {
       // Store token in localStorage
@@ -30,6 +30,8 @@ export const AuthProvider = ({ children }) => {
       setError(null);
       setLoading(true);
       
+      console.log('Attempting to register:', userData.email);
+      
       const response = await authService.register(userData);
       const { token, user } = response.data;
       
@@ -38,32 +40,27 @@ export const AuthProvider = ({ children }) => {
       setCurrentUser(user);
       setLoading(false);
       
+      console.log('Registration successful for:', user.username);
       return user;
     } catch (err) {
+      console.error('Registration error:', err);
       setError(err.response?.data?.error || 'Registration failed');
       setLoading(false);
       throw err;
     }
   };
 
-  // Login user - ensure token is stored correctly
+  // Login user
   const login = async (email, password) => {
     try {
       setError(null);
       setLoading(true);
       
-      // Log the login attempt
       console.log('Attempting login for:', email);
       
-      const data = await apiRequest('/api/auth/login', {
-        method: 'POST',
-        body: JSON.stringify({ email, password })
-      });
-      
-      // Log the login response for debugging
-      console.log('Login response received:', data);
-      
-      const { token, user } = data;
+      // Use authService instead of apiRequest
+      const response = await authService.login(email, password);
+      const { token, user } = response.data;
       
       // Make sure token exists
       if (!token) {
@@ -81,7 +78,7 @@ export const AuthProvider = ({ children }) => {
       return user;
     } catch (err) {
       console.error('Login error:', err);
-      setError(err.message || 'Login failed');
+      setError(err.response?.data?.error || 'Login failed');
       setLoading(false);
       throw err;
     }

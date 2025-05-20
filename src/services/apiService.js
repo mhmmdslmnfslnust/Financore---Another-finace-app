@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+// Update this to match your actual backend URL - this is likely the issue
+const API_URL = 'http://localhost:5000/api';  // Make sure this matches your server URL exactly
 
 // Create axios instance
 const apiClient = axios.create({
@@ -35,7 +36,7 @@ apiClient.interceptors.request.use(
   }
 );
 
-// Add response interceptor for better error handling
+// Add response interceptor for better network error handling
 apiClient.interceptors.response.use(
   (response) => {
     // Log successful responses for debugging
@@ -47,19 +48,29 @@ apiClient.interceptors.response.use(
     return response;
   },
   (error) => {
-    // Log error responses for debugging
-    console.error('API Error:', {
-      url: error.config?.url,
-      status: error.response?.status,
-      data: error.response?.data,
-      message: error.message
-    });
-    
-    // Handle authentication errors
-    if (error.response?.status === 401) {
-      // Clear token and redirect to login
-      localStorage.removeItem('token');
-      window.location.href = '/login';
+    // Log network errors clearly
+    if (!error.response) {
+      console.error('Network Error:', error.message);
+      console.error('API URL being used:', API_URL);
+      console.error('Is the server running?', 'Check your terminal');
+    } else if (error.response.status === 500) {
+      console.error('Server Error:', error.response.data);
+      console.error('This could be a database connection issue - check IP whitelist in MongoDB Atlas');
+    } else {
+      // Log error responses for debugging
+      console.error('API Error:', {
+        url: error.config?.url,
+        status: error.response?.status,
+        data: error.response?.data,
+        message: error.message
+      });
+      
+      // Handle authentication errors
+      if (error.response?.status === 401) {
+        // Clear token and redirect to login
+        localStorage.removeItem('token');
+        window.location.href = '/login';
+      }
     }
     
     return Promise.reject(error);
