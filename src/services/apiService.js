@@ -94,7 +94,9 @@ export const goalService = {
   getAll: () => apiClient.get('/goals'),
   add: (goal) => apiClient.post('/goals', goal),
   update: (id, goal) => apiClient.put(`/goals/${id}`, goal),
-  delete: (id) => apiClient.delete(`/goals/${id}`)
+  delete: (id) => apiClient.delete(`/goals/${id}`),
+  // Add this new method for contributions
+  contribute: (id, amount) => apiClient.post(`/goals/${id}/contribute`, { amount })
 };
 
 export const budgetService = {

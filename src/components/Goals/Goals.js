@@ -70,17 +70,8 @@ const Goals = () => {
   
   const handleContributeToGoal = async (id, amount) => {
     try {
-      // First get the goal to update
-      const goal = goals.find(g => g._id === id);
-      if (!goal) return;
-      
-      // Update the goal with new amount
-      const updatedGoal = {
-        ...goal,
-        currentAmount: (parseFloat(goal.currentAmount) || 0) + parseFloat(amount)
-      };
-      
-      await goalService.update(id, updatedGoal);
+      // Use the new contribute endpoint
+      await goalService.contribute(id, amount);
       await loadGoals();
     } catch (err) {
       console.error('Error contributing to goal:', err);

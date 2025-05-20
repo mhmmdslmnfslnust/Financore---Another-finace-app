@@ -3,12 +3,7 @@ const Goal = require('../models/Goal');
 // Get all goals for the authenticated user
 exports.getGoals = async (req, res) => {
   try {
-    console.log('Getting goals for user ID:', req.user.id);
-    
-    // Find goals with the current user's ID
-    const goals = await Goal.find({ user: req.user.id }).sort({ createdAt: -1 });
-    
-    console.log(`Found ${goals.length} goals for user ${req.user.id}`);
+    const goals = await Goal.find({ user: req.user.id });
     
     res.status(200).json({
       success: true,
@@ -16,7 +11,7 @@ exports.getGoals = async (req, res) => {
       data: goals
     });
   } catch (error) {
-    console.error('Error in getGoals controller:', error);
+    console.error('Error getting goals:', error);
     res.status(500).json({
       success: false,
       error: 'Server error'
@@ -24,31 +19,23 @@ exports.getGoals = async (req, res) => {
   }
 };
 
-// Create a new goal
+// Create new goal
 exports.createGoal = async (req, res) => {
   try {
-    console.log('Create goal request from user:', req.user.id);
-    console.log('Goal data received:', req.body);
-    
-    // Add user id to goal data
+    // Add user id to goal
     req.body.user = req.user.id;
     
-    // Create goal in database
     const goal = await Goal.create(req.body);
-    
-    console.log('Goal created successfully with ID:', goal._id);
     
     res.status(201).json({
       success: true,
       data: goal
     });
   } catch (error) {
-    console.error('Error in createGoal controller:', error);
+    console.error('Error creating goal:', error);
     
-    // Handle validation errors
     if (error.name === 'ValidationError') {
-      const messages = Object.values(error.errors).map(err => err.message);
-      
+      const messages = Object.values(error.errors).map(val => val.message);
       return res.status(400).json({
         success: false,
         error: messages
@@ -62,7 +49,7 @@ exports.createGoal = async (req, res) => {
   }
 };
 
-// Update an existing goal
+// Update goal
 exports.updateGoal = async (req, res) => {
   try {
     let goal = await Goal.findById(req.params.id);
@@ -93,6 +80,15 @@ exports.updateGoal = async (req, res) => {
     });
   } catch (error) {
     console.error('Error updating goal:', error);
+    
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map(val => val.message);
+      return res.status(400).json({
+        success: false,
+        error: messages
+      });
+    }
+    
     res.status(500).json({
       success: false,
       error: 'Server error'
@@ -100,7 +96,7 @@ exports.updateGoal = async (req, res) => {
   }
 };
 
-// Delete a goal
+// Delete goal
 exports.deleteGoal = async (req, res) => {
   try {
     const goal = await Goal.findById(req.params.id);
@@ -128,6 +124,59 @@ exports.deleteGoal = async (req, res) => {
     });
   } catch (error) {
     console.error('Error deleting goal:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Server error'
+    });
+  }
+};
+
+// Contribute to goal - Special endpoint for goal contributions
+exports.contributeToGoal = async (req, res) => {
+  try {
+    let goal = await Goal.findById(req.params.id);
+    
+    if (!goal) {
+      return res.status(404).json({
+        success: false,
+        error: 'Goal not found'
+      });
+    }
+    
+    // Ensure user owns this goal
+    if (goal.user.toString() !== req.user.id) {
+      return res.status(401).json({
+        success: false,
+        error: 'Not authorized to contribute to this goal'
+      });
+    }
+    
+    // Get contribution amount from request
+    const { amount } = req.body;
+    
+    if (!amount || isNaN(parseFloat(amount))) {
+      return res.status(400).json({
+        success: false,
+        error: 'Please provide a valid contribution amount'
+      });
+    }
+    
+    // Update goal with new contribution
+    const contributionAmount = parseFloat(amount);
+    const currentAmount = parseFloat(goal.currentAmount || 0);
+    
+    goal = await Goal.findByIdAndUpdate(req.params.id, 
+      { currentAmount: currentAmount + contributionAmount },
+      { new: true, runValidators: true }
+    );
+    
+    res.status(200).json({
+      success: true,
+      data: goal,
+      message: `Successfully contributed $${contributionAmount} to ${goal.title}`
+    });
+  } catch (error) {
+    console.error('Error contributing to goal:', error);
     res.status(500).json({
       success: false,
       error: 'Server error'

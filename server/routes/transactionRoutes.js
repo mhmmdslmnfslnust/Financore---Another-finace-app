@@ -1,21 +1,23 @@
 const express = require('express');
 const { 
   getTransactions, 
-  addTransaction, 
+  addTransaction,
   updateTransaction,
-  deleteTransaction 
+  deleteTransaction
 } = require('../controllers/transactionController');
 const { protect } = require('../middleware/auth');
 
 const router = express.Router();
 
-// Apply protection to all routes
+// All routes require authentication
 router.use(protect);
 
+// Get all transactions & Add new transaction
 router.route('/')
   .get(getTransactions)
   .post(addTransaction);
 
+// Update & Delete transaction
 router.route('/:id')
   .put(updateTransaction)
   .delete(deleteTransaction);

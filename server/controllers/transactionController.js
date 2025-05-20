@@ -3,7 +3,7 @@ const Transaction = require('../models/Transaction');
 // Get all transactions for the authenticated user
 exports.getTransactions = async (req, res) => {
   try {
-    const transactions = await Transaction.find({ user: req.user.id }).sort({ date: -1 });
+    const transactions = await Transaction.find({ user: req.user.id });
     
     res.status(200).json({
       success: true,
@@ -19,10 +19,10 @@ exports.getTransactions = async (req, res) => {
   }
 };
 
-// Create a new transaction
+// Add new transaction
 exports.addTransaction = async (req, res) => {
   try {
-    // Add user id to request body
+    // Add user ID to the transaction
     req.body.user = req.user.id;
     
     const transaction = await Transaction.create(req.body);
@@ -32,10 +32,10 @@ exports.addTransaction = async (req, res) => {
       data: transaction
     });
   } catch (error) {
-    console.error('Error creating transaction:', error);
+    console.error('Error adding transaction:', error);
     
     if (error.name === 'ValidationError') {
-      const messages = Object.values(error.errors).map(err => err.message);
+      const messages = Object.values(error.errors).map(val => val.message);
       return res.status(400).json({
         success: false,
         error: messages
@@ -49,11 +49,12 @@ exports.addTransaction = async (req, res) => {
   }
 };
 
-// Update transaction
+// Update transaction - Add this section
 exports.updateTransaction = async (req, res) => {
   try {
     let transaction = await Transaction.findById(req.params.id);
     
+    // Check if transaction exists
     if (!transaction) {
       return res.status(404).json({
         success: false,
@@ -61,7 +62,7 @@ exports.updateTransaction = async (req, res) => {
       });
     }
     
-    // Make sure user owns transaction
+    // Verify user owns this transaction
     if (transaction.user.toString() !== req.user.id) {
       return res.status(401).json({
         success: false,
@@ -69,9 +70,10 @@ exports.updateTransaction = async (req, res) => {
       });
     }
     
+    // Update the transaction
     transaction = await Transaction.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true
+      new: true,  // Return the updated object
+      runValidators: true  // Run model validators
     });
     
     res.status(200).json({
@@ -80,6 +82,15 @@ exports.updateTransaction = async (req, res) => {
     });
   } catch (error) {
     console.error('Error updating transaction:', error);
+    
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map(val => val.message);
+      return res.status(400).json({
+        success: false,
+        error: messages
+      });
+    }
+    
     res.status(500).json({
       success: false,
       error: 'Server error'
@@ -87,11 +98,12 @@ exports.updateTransaction = async (req, res) => {
   }
 };
 
-// Delete transaction
+// Delete transaction - Add this section
 exports.deleteTransaction = async (req, res) => {
   try {
     const transaction = await Transaction.findById(req.params.id);
     
+    // Check if transaction exists
     if (!transaction) {
       return res.status(404).json({
         success: false,
@@ -99,7 +111,7 @@ exports.deleteTransaction = async (req, res) => {
       });
     }
     
-    // Make sure user owns transaction
+    // Verify user owns this transaction
     if (transaction.user.toString() !== req.user.id) {
       return res.status(401).json({
         success: false,
@@ -107,6 +119,7 @@ exports.deleteTransaction = async (req, res) => {
       });
     }
     
+    // Remove the transaction
     await transaction.deleteOne();
     
     res.status(200).json({

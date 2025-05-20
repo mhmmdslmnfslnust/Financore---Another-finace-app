@@ -3,7 +3,8 @@ const {
   getGoals, 
   createGoal, 
   updateGoal, 
-  deleteGoal 
+  deleteGoal,
+  contributeToGoal
 } = require('../controllers/goalController');
 const { protect } = require('../middleware/auth');
 
@@ -21,5 +22,9 @@ router.route('/')
 router.route('/:id')
   .put(updateGoal)
   .delete(deleteGoal);
+
+// Special route for contributions
+router.route('/:id/contribute')
+  .post(contributeToGoal);
 
 module.exports = router;
