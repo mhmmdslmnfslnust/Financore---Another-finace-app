@@ -1,2 +1,6 @@
 node_modules
 bug
+# Environment variables
+.env
+.env.local
+server/.env

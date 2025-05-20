@@ -52,17 +52,32 @@ FinanCore is a comprehensive personal finance management system that helps users
    cd financore
    ```
 
-2. Install dependencies:
+2. Environment Setup:
+   - Create a `.env` file in the server directory using `.env.example` as a template
+   - Update the credentials in your `.env` file
+   - Never commit your actual `.env` file to version control
+   ```
+   # Example .env setup
+   cp server/.env.example server/.env
+   # Then edit server/.env with your actual credentials
+   ```
+
+3. Install dependencies:
    ```
    npm install
+   cd server && npm install
    ```
 
-3. Start the development server:
+4. Start the development server:
    ```
+   # In one terminal
    npm start
+   
+   # In another terminal
+   cd server && npm start
    ```
 
-4. Open your browser and navigate to `http://localhost:3000`
+5. Open your browser and navigate to `http://localhost:3000`
 
 ## Usage Guide
 
