@@ -9,11 +9,6 @@ import Navbar from './components/UI/Navbar';
 import Sidebar from './components/UI/Sidebar';
 import './App.css';
 
-// Import patterns
-import DatabaseService from './patterns/singleton/DatabaseService';
-import { BudgetingState } from './patterns/state/FinancialState';
-
-// Add these imports
 import { AuthProvider } from './context/AuthContext';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -23,10 +18,10 @@ function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   
   // Initialize the application with a default state
-  useEffect(() => {
-    const defaultState = new BudgetingState();
-    DatabaseService.setFinancialState(defaultState);
-  }, []);
+  // useEffect(() => {
+  //   const defaultState = new BudgetingState();
+  //   DatabaseService.setFinancialState(defaultState);
+  // }, []);
 
   return (
     <AuthProvider>

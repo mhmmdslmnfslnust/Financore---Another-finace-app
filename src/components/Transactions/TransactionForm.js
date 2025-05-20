@@ -1,7 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { EXPENSE_CATEGORIES, INCOME_CATEGORIES } from '../../models/Transaction';
+// Define categories directly in this file instead of importing from deleted model
+// import { EXPENSE_CATEGORIES, INCOME_CATEGORIES } from '../../models/Transaction';
 import './TransactionForm.css';
+
+// Define categories directly
+const EXPENSE_CATEGORIES = [
+  'Housing', 'Transportation', 'Food', 'Utilities', 'Insurance', 
+  'Healthcare', 'Debt', 'Personal', 'Entertainment', 'Education', 
+  'Miscellaneous'
+];
+
+const INCOME_CATEGORIES = [
+  'Salary', 'Freelance', 'Investments', 'Gifts', 'Other Income'
+];
+
+// ...existing code...
 
 const TransactionForm = ({ transaction, onSave, onCancel }) => {
   const [formData, setFormData] = useState({
