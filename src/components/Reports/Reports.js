@@ -12,7 +12,7 @@ import {
   Tooltip,
   Legend
 } from 'chart.js';
-import TransactionService from '../../services/TransactionService';
+import { transactionService } from '../../services/apiService';
 import './Reports.css';
 
 // Register ChartJS components
@@ -45,31 +45,71 @@ const Reports = () => {
     expenses: []
   });
   
-  const transactionService = new TransactionService();
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   
+  // Fetch real transaction data from MongoDB
   useEffect(() => {
-    // Prepare category data for pie chart
-    const categorySummary = transactionService.getCategorySummary();
-    const expenseCategories = Object.entries(categorySummary)
-      .filter(([_, data]) => data.type === 'expense');
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        
+        const response = await transactionService.getAll();
+        const transactions = response.data.data || [];
+        
+        // Process the transaction data for charts
+        prepareChartData(transactions);
+        setIsLoading(false);
+      } catch (err) {
+        console.error('Error fetching report data:', err);
+        setError('Failed to load reports. Please try again.');
+        setIsLoading(false);
+      }
+    };
     
-    setTransactionData({
-      categories: expenseCategories.map(([category]) => category),
-      amounts: expenseCategories.map(([_, data]) => data.total)
-    });
-    
-    // Get income vs expenses data
-    setIncomeVsExpenses({
-      income: transactionService.getTotalIncome(),
-      expenses: transactionService.getTotalExpenses()
-    });
-    
-    // Prepare monthly data
-    prepareMonthlyData();
+    fetchData();
   }, []);
   
-  const prepareMonthlyData = () => {
-    const transactions = transactionService.getAllTransactions();
+  // Process transaction data for charts
+  const prepareChartData = (transactions) => {
+    if (!transactions || transactions.length === 0) {
+      return;
+    }
+    
+    // Calculate income vs expenses
+    const incomeTotal = transactions
+      .filter(t => t.type === 'income')
+      .reduce((sum, t) => sum + parseFloat(t.amount), 0);
+      
+    const expenseTotal = transactions
+      .filter(t => t.type === 'expense')
+      .reduce((sum, t) => sum + parseFloat(t.amount), 0);
+      
+    setIncomeVsExpenses({
+      income: incomeTotal,
+      expenses: expenseTotal
+    });
+    
+    // Group expenses by category for pie chart
+    const expensesByCategory = transactions
+      .filter(t => t.type === 'expense')
+      .reduce((acc, t) => {
+        const category = t.category || 'Uncategorized';
+        if (!acc[category]) acc[category] = 0;
+        acc[category] += parseFloat(t.amount);
+        return acc;
+      }, {});
+    
+    setTransactionData({
+      categories: Object.keys(expensesByCategory),
+      amounts: Object.values(expensesByCategory)
+    });
+    
+    // Group by month for line chart
+    prepareMonthlyData(transactions);
+  };
+  
+  const prepareMonthlyData = (transactions) => {
     const months = {};
     
     transactions.forEach(transaction => {
@@ -81,13 +121,13 @@ const Reports = () => {
       }
       
       if (transaction.type === 'income') {
-        months[monthYear].income += transaction.amount;
+        months[monthYear].income += parseFloat(transaction.amount);
       } else {
-        months[monthYear].expenses += transaction.amount;
+        months[monthYear].expenses += parseFloat(transaction.amount);
       }
     });
     
-    // Convert to arrays for chart
+    // Sort months chronologically
     const sortedMonths = Object.keys(months).sort((a, b) => {
       const [aMonth, aYear] = a.split('/').map(Number);
       const [bMonth, bYear] = b.split('/').map(Number);
@@ -103,6 +143,7 @@ const Reports = () => {
     });
   };
   
+  // Chart configuration functions
   const getCategoryChartData = () => {
     return {
       labels: transactionData.categories,
@@ -155,6 +196,14 @@ const Reports = () => {
       ]
     };
   };
+  
+  if (isLoading) {
+    return <div className="loading">Generating financial reports...</div>;
+  }
+  
+  if (error) {
+    return <div className="error">{error}</div>;
+  }
   
   return (
     <div className="reports-page">
