@@ -1,107 +1,123 @@
 import axios from 'axios';
 
-// Update this to match your actual backend URL - this is likely the issue
-const API_URL = 'http://localhost:5000/api';  // Make sure this matches your server URL exactly
+const API_URL = 'http://localhost:5000/api';
 
-// Create axios instance
-const apiClient = axios.create({
+// Create axios instance with default config
+const api = axios.create({
   baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json'
   }
 });
 
-// Interceptor to add token to requests
-apiClient.interceptors.request.use(
+// Add request interceptor for auth token and proper JSON formatting
+api.interceptors.request.use(
   (config) => {
+    // Add auth token to headers if available
     const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
-      console.log(`Adding auth token to ${config.url} request`);
-    } else {
-      console.warn(`No auth token available for ${config.url} request`);
     }
-    // Log outgoing requests for debugging
-    console.log('API Request:', {
-      url: config.url,
-      method: config.method,
-      headers: config.headers,
-      data: config.data
-    });
+    
+    // Ensure proper JSON formatting for POST/PUT requests
+    if ((config.method === 'post' || config.method === 'put') && config.data) {
+      // If data is a string (which would cause JSON parsing errors)
+      if (typeof config.data === 'string') {
+        console.warn('Converting string data to object:', config.data);
+        // Convert to proper object
+        try {
+          // If it's already JSON-formatted, parse it
+          config.data = JSON.parse(config.data);
+        } catch (e) {
+          // If not JSON, make it an object with a default property
+          config.data = { data: config.data };
+        }
+      }
+      
+      // Log outgoing request for debugging
+      console.log(`Request to ${config.url}:`, 
+        config.data.password ? {...config.data, password: '***'} : config.data);
+    }
+    
     return config;
   },
   (error) => {
-    console.error('Request interceptor error:', error);
+    console.error('Request error:', error);
     return Promise.reject(error);
   }
 );
 
-// Add response interceptor for better network error handling
-apiClient.interceptors.response.use(
+// Add response interceptor for error handling
+api.interceptors.response.use(
   (response) => {
-    // Log successful responses for debugging
-    console.log('API Response:', {
-      url: response.config.url,
-      status: response.status,
-      data: response.data
-    });
     return response;
   },
   (error) => {
-    // Log network errors clearly
-    if (!error.response) {
-      console.error('Network Error:', error.message);
-      console.error('API URL being used:', API_URL);
-      console.error('Is the server running?', 'Check your terminal');
-    } else if (error.response.status === 500) {
-      console.error('Server Error:', error.response.data);
-      console.error('This could be a database connection issue - check IP whitelist in MongoDB Atlas');
-    } else {
-      // Log error responses for debugging
-      console.error('API Error:', {
-        url: error.config?.url,
-        status: error.response?.status,
-        data: error.response?.data,
-        message: error.message
-      });
+    // Handle common errors
+    if (error.response) {
+      // The request was made and the server responded with an error status
+      console.error('Server error:', error.response.status, error.response.data);
       
       // Handle authentication errors
-      if (error.response?.status === 401) {
-        // Clear token and redirect to login
-        localStorage.removeItem('token');
-        window.location.href = '/login';
+      if (error.response.status === 401) {
+        console.log('Authentication error detected');
+        if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
+          // Clear token and redirect to login
+          localStorage.removeItem('token');
+        }
       }
+    } else if (error.request) {
+      // The request was made but no response was received
+      console.error('No response received:', error.request);
+    } else {
+      // Something happened in setting up the request
+      console.error('Request setup error:', error.message);
     }
     
     return Promise.reject(error);
   }
 );
 
+// Auth API Service
 export const authService = {
-  register: (userData) => apiClient.post('/auth/register', userData),
-  login: (email, password) => apiClient.post('/auth/login', { email, password }),
-  getMe: () => apiClient.get('/auth/me')
+  login: (credentials) => {
+    // Ensure credentials is a proper object with email and password
+    if (!credentials || typeof credentials !== 'object') {
+      credentials = { email: '', password: '' };
+    }
+    
+    return api.post('/auth/login', credentials);
+  },
+  register: (userData) => api.post('/auth/register', userData),
+  getCurrentUser: () => api.get('/auth/me')
 };
 
+// Transaction API Service
 export const transactionService = {
-  getAll: () => apiClient.get('/transactions'),
-  add: (transaction) => apiClient.post('/transactions', transaction),
-  update: (id, transaction) => apiClient.put(`/transactions/${id}`, transaction),
-  delete: (id) => apiClient.delete(`/transactions/${id}`)
+  getAll: () => api.get('/transactions'),
+  getById: (id) => api.get(`/transactions/${id}`),
+  add: (transaction) => api.post('/transactions', transaction),
+  update: (id, transaction) => api.put(`/transactions/${id}`, transaction),
+  delete: (id) => api.delete(`/transactions/${id}`)
 };
 
+// Goal API Service
 export const goalService = {
-  getAll: () => apiClient.get('/goals'),
-  add: (goal) => apiClient.post('/goals', goal),
-  update: (id, goal) => apiClient.put(`/goals/${id}`, goal),
-  delete: (id) => apiClient.delete(`/goals/${id}`),
-  // Add this new method for contributions
-  contribute: (id, amount) => apiClient.post(`/goals/${id}/contribute`, { amount })
+  getAll: () => api.get('/goals'),
+  getById: (id) => api.get(`/goals/${id}`),
+  add: (goal) => api.post('/goals', goal),
+  update: (id, goal) => api.put(`/goals/${id}`, goal),
+  delete: (id) => api.delete(`/goals/${id}`),
+  contribute: (id, amount) => api.put(`/goals/${id}/contribute`, { amount })
 };
 
+// Budget API Service
 export const budgetService = {
-  getAll: () => apiClient.get('/budgets'),
-  add: (budget) => apiClient.post('/budgets', budget),
-  update: (id, budget) => apiClient.put(`/budgets/${id}`, budget),
-  delete: (id) => apiClient.delete(`/budgets/${id}`)
+  getAll: () => api.get('/budgets'),
+  getById: (id) => api.get(`/budgets/${id}`),
+  add: (budget) => api.post('/budgets', budget),
+  update: (id, budget) => api.put(`/budgets/${id}`, budget),
+  delete: (id) => api.delete(`/budgets/${id}`)
 };
+
+export default api;

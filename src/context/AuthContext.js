@@ -1,122 +1,83 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { authService } from '../services/apiService';
 
+// Create Auth Context
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem('token'));
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Set auth token for API calls
-  const setAuthToken = (token) => {
-    if (token) {
-      // Store token in localStorage
-      localStorage.setItem('token', token);
-      
-      // Log token storage for debugging
-      console.log('Token stored in localStorage:', token.substring(0, 20) + '...');
-    } else {
-      // Remove token from localStorage
-      localStorage.removeItem('token');
-      console.log('Token removed from localStorage');
-    }
-  };
-
-  // Register user
-  const register = async (userData) => {
-    try {
-      setError(null);
+  // Check if user is authenticated on app load
+  useEffect(() => {
+    const checkUserLoggedIn = async () => {
       setLoading(true);
-      
-      console.log('Attempting to register:', userData.email);
-      
-      const response = await authService.register(userData);
-      const { token, user } = response.data;
-      
-      setAuthToken(token);
-      setToken(token);
-      setCurrentUser(user);
-      setLoading(false);
-      
-      console.log('Registration successful for:', user.username);
-      return user;
-    } catch (err) {
-      console.error('Registration error:', err);
-      setError(err.response?.data?.error || 'Registration failed');
-      setLoading(false);
-      throw err;
-    }
-  };
+      try {
+        // Check for token
+        const token = localStorage.getItem('token');
+        if (!token) {
+          setCurrentUser(null);
+          setLoading(false);
+          return;
+        }
 
-  // Login user
-  const login = async (email, password) => {
-    try {
-      setError(null);
-      setLoading(true);
-      
-      console.log('Attempting login for:', email);
-      
-      // Use authService instead of apiRequest
-      const response = await authService.login(email, password);
-      const { token, user } = response.data;
-      
-      // Make sure token exists
-      if (!token) {
-        console.error('No token returned from login');
-        throw new Error('Login failed - no token received');
+        // Verify token with backend
+        const response = await authService.getCurrentUser();
+        if (response.data && response.data.data) {
+          setCurrentUser(response.data.data);
+        } else {
+          localStorage.removeItem('token');
+          setCurrentUser(null);
+        }
+      } catch (err) {
+        console.error('Authentication check failed:', err);
+        localStorage.removeItem('token'); // Clear invalid token
+        setCurrentUser(null);
+        setError('Authentication failed. Please login again.');
+      } finally {
+        setLoading(false);
       }
-      
-      // Store token
-      setAuthToken(token);
-      setToken(token);
-      setCurrentUser(user);
-      setLoading(false);
-      
-      console.log('Login successful for:', user.username);
-      return user;
+    };
+
+    checkUserLoggedIn();
+  }, []);
+
+  // Login function
+  const login = async (credentials) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await authService.login(credentials);
+      if (response.data && response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        setCurrentUser(response.data.user);
+        return true;
+      }
+      return false;
     } catch (err) {
-      console.error('Login error:', err);
+      console.error('Login failed:', err);
       setError(err.response?.data?.error || 'Login failed');
+      return false;
+    } finally {
       setLoading(false);
-      throw err;
     }
   };
 
-  // Logout user
+  // Logout function
   const logout = () => {
-    setAuthToken(null);
-    setToken(null);
+    localStorage.removeItem('token');
     setCurrentUser(null);
   };
 
-  // Check if user is authenticated
-  const checkUserAuthentication = async () => {
-    if (token) {
-      try {
-        const response = await authService.getMe();
-        setCurrentUser(response.data.data);
-      } catch (err) {
-        setAuthToken(null);
-        setToken(null);
-        setCurrentUser(null);
-      }
-    }
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    checkUserAuthentication();
-  }, []);
-
+  // Provide auth context
   return (
     <AuthContext.Provider
       value={{
         currentUser,
+        setCurrentUser,
         loading,
         error,
-        register,
         login,
         logout
       }}

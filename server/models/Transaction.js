@@ -8,7 +8,7 @@ const transactionSchema = new mongoose.Schema({
   },
   amount: {
     type: Number,
-    required: [true, 'Please provide an amount']
+    required: [true, 'Please add an amount']
   },
   type: {
     type: String,
@@ -17,13 +17,17 @@ const transactionSchema = new mongoose.Schema({
   },
   category: {
     type: String,
-    required: [true, 'Please provide a category']
+    required: [true, 'Please add a category']
   },
   description: {
     type: String,
-    trim: true
+    default: ''
   },
   date: {
+    type: Date,
+    default: Date.now
+  },
+  createdAt: {
     type: Date,
     default: Date.now
   }

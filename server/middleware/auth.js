@@ -3,66 +3,48 @@ const User = require('../models/User');
 
 // Protect routes
 exports.protect = async (req, res, next) => {
+  let token;
+
+  // Check if authorization header exists and starts with Bearer
+  if (
+    req.headers.authorization && 
+    req.headers.authorization.startsWith('Bearer')
+  ) {
+    // Extract token from header
+    token = req.headers.authorization.split(' ')[1];
+  }
+
+  // Check if token exists
+  if (!token) {
+    console.error('No auth token found in request');
+    return res.status(401).json({ 
+      success: false, 
+      error: 'Not authorized to access this route'
+    });
+  }
+
   try {
-    let token;
+    // Verify token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log('Token verified:', decoded);
+
+    // Add user to request object
+    req.user = await User.findById(decoded.id);
     
-    // Check authorization header format
-    console.log('Auth Header:', req.headers.authorization);
-    
-    // Extract token from Authorization header
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-      token = req.headers.authorization.split(' ')[1];
-      console.log('Token extracted:', token ? 'Token present' : 'No token');
-    }
-    
-    // Check if token exists
-    if (!token) {
-      console.log('No token provided in request');
-      return res.status(401).json({
-        success: false,
-        error: 'No authentication token, access denied'
+    if (!req.user) {
+      return res.status(401).json({ 
+        success: false, 
+        error: 'User not found with this token' 
       });
     }
     
-    try {
-      // Verify token with secret
-      console.log('JWT Secret exists:', !!process.env.JWT_SECRET);
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      console.log('Token decoded successfully:', decoded);
-      
-      // Find user with the ID from token
-      const user = await User.findById(decoded.id);
-      console.log('User found:', user ? 'Yes' : 'No');
-      
-      if (!user) {
-        console.log('User not found for ID:', decoded.id);
-        return res.status(401).json({
-          success: false,
-          error: 'User not found'
-        });
-      }
-      
-      // Set user in request object - ensure consistent property name
-      req.user = {
-        id: user._id, 
-        username: user.username,
-        email: user.email
-      };
-      
-      console.log('User authorized:', req.user.username);
-      next();
-    } catch (error) {
-      console.error('Token verification failed:', error.message);
-      return res.status(401).json({
-        success: false,
-        error: 'Invalid authentication token'
-      });
-    }
+    next();
   } catch (error) {
-    console.error('Auth middleware error:', error.message);
-    return res.status(500).json({
-      success: false,
-      error: 'Server authentication error'
+    console.error('Auth middleware error:', error);
+    return res.status(401).json({ 
+      success: false, 
+      error: 'Not authorized to access this route',
+      details: error.message
     });
   }
 };

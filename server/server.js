@@ -24,9 +24,27 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// Ensure body parsing middleware is properly set up
+// Ensure body parsing middleware is properly set up FIRST
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// THEN add the custom error handler for JSON parsing errors
+app.use((err, req, res, next) => {
+  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+    console.error('JSON Parse Error:', err.message);
+    console.error('Invalid JSON received:', err.body);
+    return res.status(400).json({ 
+      success: false, 
+      error: 'Invalid JSON format in request body',
+      details: 'Please ensure you are sending a valid JSON object',
+      example: {
+        "login": { "email": "example@email.com", "password": "yourpassword" },
+        "register": { "username": "example", "email": "example@email.com", "password": "yourpassword" }
+      }
+    });
+  }
+  next(err);
+});
 
 // Add request debugging - log all incoming requests
 app.use((req, res, next) => {
@@ -168,7 +186,8 @@ app.use((err, req, res, next) => {
   console.error('Server error:', err);
   res.status(500).json({
     success: false,
-    error: 'Server error'
+    error: 'Server error',
+    message: err.message || 'Unknown error occurred'
   });
 });
 

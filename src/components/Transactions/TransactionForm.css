@@ -1,5 +1,5 @@
 .transaction-form-container {
-  background-color: #fff;
+  background-color: white;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 20px;
@@ -8,14 +8,24 @@
 
 .transaction-form-container h2 {
   margin-top: 0;
-  color: #333;
   margin-bottom: 20px;
+  color: #333;
+  font-size: 1.5rem;
 }
 
 .transaction-form {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 16px;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+}
+
+.form-row .form-group {
+  flex: 1;
 }
 
 .form-group {
@@ -23,47 +33,24 @@
   flex-direction: column;
 }
 
-.form-row {
-  display: flex;
-  gap: 15px;
-}
-
-.form-row .form-group {
-  flex: 1;
-}
-
 .form-group label {
-  margin-bottom: 5px;
-  font-weight: 500;
+  font-size: 0.9rem;
   color: #555;
+  margin-bottom: 5px;
 }
 
 .form-group input,
-.form-group select {
+.form-group select,
+.form-group textarea {
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
-.form-group input:focus,
-.form-group select:focus {
-  outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
-}
-
-.radio-group {
-  display: flex;
-  gap: 20px;
-}
-
-.radio-group label {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  cursor: pointer;
-  font-weight: normal;
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
 }
 
 .form-actions {
@@ -73,33 +60,36 @@
   margin-top: 10px;
 }
 
-.cancel-button {
-  padding: 8px 16px;
-  background-color: #f1f1f1;
-  color: #333;
+.cancel-button,
+.save-button {
+  padding: 10px 20px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 0.9rem;
-  transition: background-color 0.2s;
+  font-weight: 500;
+}
+
+.cancel-button {
+  background-color: #f1f1f1;
+  color: #333;
 }
 
 .save-button {
-  padding: 8px 16px;
-  background-color: #007bff;
+  background-color: #4caf50;
   color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition: background-color 0.2s;
 }
 
 .cancel-button:hover {
-  background-color: #e1e1e1;
+  background-color: #e0e0e0;
 }
 
 .save-button:hover {
-  background-color: #0069d9;
+  background-color: #3d9440;
+}
+
+@media (max-width: 768px) {
+  .form-row {
+    flex-direction: column;
+    gap: 10px;
+  }
 }
