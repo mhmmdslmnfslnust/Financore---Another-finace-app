@@ -74,6 +74,15 @@
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
+.transaction-item button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: background-color 0.2s;
+}
+
 .dark-mode .transaction-item {
     background-color: var(--dark-card-background);
 }
@@ -161,33 +170,6 @@
 .transaction-actions {
   display: flex;
   gap: 8px;
-}
-
-.edit-button,
-.delete-button {
-  border: none;
-  border-radius: 4px;
-  padding: 6px 12px;
-  cursor: pointer;
-  font-size: 0.9rem;
-}
-
-.edit-button {
-  background-color: #f0f0f0;
-  color: #333;
-}
-
-.delete-button {
-  background-color: #ffebee;
-  color: #c62828;
-}
-
-.edit-button:hover {
-  background-color: #e0e0e0;
-}
-
-.delete-button:hover {
-  background-color: #ffcdd2;
 }
 
 @media (max-width: 768px) {

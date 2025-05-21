@@ -13,6 +13,10 @@
   align-items: center;
 }
 
+.dark-mode .transaction-item {
+    border-bottom: 1px solid #444;
+}
+
 .transaction-item:last-child {
   border-bottom: none;
 }
