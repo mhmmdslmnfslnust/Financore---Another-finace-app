@@ -4,8 +4,18 @@
 
 .dashboard h1 {
   margin-bottom: 20px;
-  color: #333;
+  color: #444;
 }
+
+/* Add dark mode styling for h1 headings*/
+.dark-mode .dashboard h1 {
+  color: var(--dark-text-color);
+}
+
+/* .dark-mode .dashboard h1 {
+  color: var(--accent-color);
+} */
+
 
 .dashboard-grid {
   display: grid;

@@ -145,7 +145,7 @@ const Transactions = () => {
               
               <div className="transaction-actions">
                 <button 
-                  className="edit-button" 
+                  className="edit-btn" 
                   onClick={() => {
                     setCurrentTransaction(transaction);
                     setIsEditing(true);
@@ -155,7 +155,7 @@ const Transactions = () => {
                   Edit
                 </button>
                 <button 
-                  className="delete-button" 
+                  className="delete-btn" 
                   onClick={() => handleDeleteTransaction(transaction._id)}
                 >
                   Delete

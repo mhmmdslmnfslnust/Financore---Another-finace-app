@@ -1,4 +1,4 @@
-.top-recommendations .recommendations-list {
+.recommendations-card .recommendations-list {
   list-style: none;
   padding: 0;
   margin: 15px 0;
@@ -9,6 +9,7 @@
   border-radius: 4px;
   margin-bottom: 10px;
   position: relative;
+  font-size: 0.95rem;
 }
 
 .recommendation-item:last-child {
@@ -25,9 +26,27 @@
   border-left: 4px solid #2196F3;
 }
 
+.dark-mode .recommendation-item.info {
+  background-color: var(--dark-light-gray, #2a2a2a);
+  border-left: 4px solid #90caf9;
+  color: var(--dark-text-color);
+}
+
+.dark-mode .recommendation-item.warning {
+  background-color: #332d1e;
+  border-left: 4px solid #ffc107;
+  color: var(--dark-text-color);
+}
+
 .recommendation-item.tip {
   background-color: #f1f8e9;
   border-left: 4px solid #8bc34a;
+}
+
+.dark-mode .recommendation-item.tip {
+  background-color: #293226;
+  border-left: 4px solid #8bc34a;
+  color: var(--dark-text-color);
 }
 
 .recommendation-item.suggestion {
@@ -35,9 +54,21 @@
   border-left: 4px solid #3f51b5;
 }
 
+.dark-mode .recommendation-item.suggestion {
+  background-color: #292b36;
+  border-left: 4px solid #3f51b5;
+  color: var(--dark-text-color);
+}
+
 .recommendation-item.goal {
   background-color: #e0f2f1;
   border-left: 4px solid #009688;
+}
+
+.dark-mode .recommendation-item.goal {
+  background-color: #263534;
+  border-left: 4px solid #009688;
+  color: var(--dark-text-color);
 }
 
 .recommendation-item.education {
@@ -45,9 +76,45 @@
   border-left: 4px solid #9c27b0;
 }
 
-.tip {
+.dark-mode .recommendation-item.education {
+  background-color: #332a34;
+  border-left: 4px solid #9c27b0;
+  color: var(--dark-text-color);
+}
+
+.view-all {
+  display: block;
   text-align: center;
-  color: #666;
-  font-style: italic;
-  margin: 10px 0;
+  margin-top: 15px;
+  color: #2196F3;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.dark-mode .view-all {
+  color: #004384;
+  transition: color 0.3s ease;
+}
+
+.view-all:hover {
+  text-decoration: underline;
+  text-decoration-color: #FFEB3B;
+  color: #FFEB3B;
+}
+
+.dark-mode .view-all:hover {
+  text-decoration: underline;
+  text-decoration-color: #FFEB3B;
+  color: #FFEB3B;
+}
+
+.no-data {
+  text-align: center;
+  color: #777;
+  margin: 30px 0;
+}
+
+.dark-mode .no-data {
+  color: #999;
 }

@@ -32,6 +32,11 @@
   margin-bottom: 5px;
 }
 
+/* Add dark mode styling for progress bar background */
+.dark-mode .goal-progress-bar {
+  background-color: var(--dark-progress-bar-background);
+}
+
 .goal-progress-fill {
   height: 100%;
   background-color: #007bff;
@@ -42,6 +47,10 @@
   font-size: 0.85rem;
   font-weight: 500;
   color: #007bff;
+}
+
+.dark-mode .goal-percentage {
+  color: #004384;
 }
 
 .add-goal-button {

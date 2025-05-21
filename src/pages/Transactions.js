@@ -89,7 +89,7 @@ function Transactions() {
             
             <div className="transaction-actions">
               <button 
-                className="delete-button" 
+                className="delete-btn" 
                 onClick={() => handleDeleteTransaction(transaction._id)}
               >
                 Delete

@@ -5,6 +5,7 @@ import FinancialSummary from './FinancialSummary';
 import RecentTransactions from './RecentTransactions';
 import GoalsOverview from './GoalsOverview';
 import './Dashboard.css';
+import './TopRecommendations.css'; // Add this import to include the recommendation styles
 
 const Dashboard = () => {
   const [transactions, setTransactions] = useState([]);
@@ -125,13 +126,10 @@ const Dashboard = () => {
 
         <GoalsOverview goals={goals} />
 
-        <div className="dashboard-card recommendations-card">
+        <div className="dashboard-card recommendations-card card">
           <h2>Recommendations</h2>
           <ul className="recommendations-list">
-            {[
-              ...(recommendations.spending || []),
-              ...(recommendations.savings || [])
-            ].slice(0, 3).map((rec, index) => (
+            {recommendations.spending.concat(recommendations.savings).slice(0, 3).map((rec, index) => (
               <li key={index} className={`recommendation-item ${rec.type}`}>
                 {rec.message}
               </li>
@@ -144,6 +142,7 @@ const Dashboard = () => {
               </li>
             )}
           </ul>
+          <a href="/recommendations" className="view-all">View All Recommendations</a>
         </div>
       </div>
     </div>

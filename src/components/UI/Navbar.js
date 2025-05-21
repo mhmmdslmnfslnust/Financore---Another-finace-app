@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
+import DarkModeToggle from './DarkModeToggle';
 import './Navbar.css';
 
 const Navbar = ({ toggleSidebar }) => {
@@ -25,10 +26,11 @@ const Navbar = ({ toggleSidebar }) => {
         <Link to="/" className="navbar-brand">FinanCore</Link>
       </div>
       <div className="navbar-right">
+        <DarkModeToggle />
         {currentUser ? (
           <div className="user-info-container">
             <span className="user-info">{currentUser.username || "User"}</span>
-            <button onClick={handleLogout} className="logout-btn">Logout</button>
+            <button onClick={handleLogout} className="logout-btn"><span>Logout</span></button>
           </div>
         ) : (
           <button onClick={handleLogin} className="login-btn">Sign In</button>

@@ -13,6 +13,7 @@
   --hover-color: #e6b91e; /* Mustard yellow for hover effects */
   --light-gray: #eeeeea; /* Light gray for borders and cards */
   --medium-gray: #a2a2a2; /* Medium gray for secondary text */
+  --dark-light-gray: #2a2a2a; /* Darker gray for dark mode backgrounds */
 }
 
 body {
@@ -26,3 +27,26 @@ body {
 
 /* Add !important to ensure our styles take precedence */
 /* ...remaining CSS with !important added to key properties... */
+
+/* Corrected dark mode sidebar hover effects - grayish background with yellowish text */
+.dark-mode .sidebar a:hover {
+  background-color: var(--dark-light-gray, #2a2a2a) !important; /* Gray background */
+  color: var(--accent-color, #e6b91e) !important; /* Yellow text */
+}
+
+.dark-mode .sidebar-menu a:hover {
+  background-color: var(--dark-light-gray, #2a2a2a) !important; /* Gray background */
+  color: var(--accent-color, #e6b91e) !important; /* Yellow text */
+}
+
+/* Ensure the active state in dark mode also uses correct colors */
+.dark-mode .sidebar a.active,
+.dark-mode .sidebar-menu a.active {
+  background-color: var(--dark-light-gray, #2a2a2a) !important; /* Gray background */
+  color: var(--accent-color, #e6b91e) !important; /* Yellow text */
+}
+
+/* Make sure the active marker is visible in dark mode */
+.dark-mode .sidebar-menu a.active:before {
+  background-color: var(--accent-color, #e6b91e) !important; /* Yellow indicator line */
+}

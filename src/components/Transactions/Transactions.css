@@ -14,6 +14,11 @@
   color: #333;
 }
 
+/* Add dark mode styling for h1 headings */
+.dark-mode .transactions-header h1 {
+  color: var(--dark-text-color);
+}
+
 .add-button {
   background-color: #4caf50;
   color: white;
@@ -69,6 +74,19 @@
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
+.transaction-item button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: background-color 0.2s;
+}
+
+.dark-mode .transaction-item {
+    background-color: var(--dark-card-background);
+}
+
 .transaction-item:hover {
   transform: translateY(-2px);
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
@@ -80,6 +98,15 @@
 
 .transaction-item.expense {
   border-left: 4px solid #f44336;
+}
+
+/* Add dark mode styling for transaction item borders */
+.dark-mode .transaction-item.income {
+  border-left: 4px solid #66bb6a; /* Lighter, more visible green for dark mode */
+}
+
+.dark-mode .transaction-item.expense {
+  border-left: 4px solid #ef5350; /* Brighter red for dark mode */
 }
 
 .transaction-details {
@@ -100,6 +127,10 @@
   color: #333;
 }
 
+.dark-mode .transaction-category {
+  color: var(--dark-text-color);
+}
+
 .transaction-amount {
   font-weight: 600;
 }
@@ -110,6 +141,14 @@
 
 .expense .transaction-amount {
   color: #f44336;
+}
+
+.dark-mode .income .transaction-amount {
+  color: #70b974; /* Lighter, more visible green for dark mode */
+}
+
+.dark-mode .expense .transaction-amount {
+  color: #c56866; /* Brighter red for dark mode */
 }
 
 .transaction-secondary {
@@ -131,33 +170,6 @@
 .transaction-actions {
   display: flex;
   gap: 8px;
-}
-
-.edit-button,
-.delete-button {
-  border: none;
-  border-radius: 4px;
-  padding: 6px 12px;
-  cursor: pointer;
-  font-size: 0.9rem;
-}
-
-.edit-button {
-  background-color: #f0f0f0;
-  color: #333;
-}
-
-.delete-button {
-  background-color: #ffebee;
-  color: #c62828;
-}
-
-.edit-button:hover {
-  background-color: #e0e0e0;
-}
-
-.delete-button:hover {
-  background-color: #ffcdd2;
 }
 
 @media (max-width: 768px) {
