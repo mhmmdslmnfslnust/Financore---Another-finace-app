@@ -78,14 +78,93 @@ The recommendation engine uses simple AI algorithms to:
 
 The system compares user's financial behavior against best practices and provides personalized suggestions for improvement.
 
-## Extensibility Considerations
+## Frontend Architecture
 
-The system is designed to be easily extended with:
-- New transaction categories
-- Additional account types
-- More sophisticated recommendation algorithms
-- Enhanced reporting capabilities
-- Third-party financial service integrations
+### Component Structure
+The frontend follows a hierarchical component structure:
+
+1. **Layout Components**: Define the overall UI structure
+   - `Navbar`: Top navigation with user controls
+   - `Sidebar`: Navigation menu with links to main features
+   - `PageLayout`: Wraps content with consistent padding and structure
+
+2. **Feature Components**: Implement specific functionality
+   - Dashboard components for financial overview
+   - Transaction components for managing expenses and income
+   - Goal components for tracking financial goals
+   - Budget components for managing budgeting strategies
+
+3. **UI Components**: Reusable UI elements
+   - `Card`: Container for content sections
+   - `Button`: Styled button components
+   - `Modal`: Popup dialogs
+   - `Chart`: Data visualization components
+
+### State Management
+- React Context API is used for global state management
+- Custom hooks encapsulate related functionality
+- Local component state for UI-specific state
+
+## Backend Architecture
+
+### API Structure
+The REST API is organized into the following endpoints:
+
+1. **Authentication**: `/api/auth`
+   - User registration, login, and profile management
+
+2. **Transactions**: `/api/transactions`
+   - CRUD operations for financial transactions
+   - Transaction filtering and categorization
+
+3. **Goals**: `/api/goals`
+   - Managing financial goals and tracking progress
+
+4. **Budgets**: `/api/budgets`
+   - Budget creation and management
+   - Budget strategy implementation
+
+### Database Design
+MongoDB collections are structured as follows:
+
+1. **Users**: User account information
+2. **Transactions**: Financial transactions with categories
+3. **Goals**: Financial goals with progress tracking
+4. **Budgets**: Budget configurations and limits
+
+## Deployment Architecture
+
+The application uses a modern deployment architecture:
+
+1. **Frontend**: React application served as static files
+   - Optimized bundle with code splitting
+   - Cached assets for improved performance
+
+2. **Backend**: Node.js Express API
+   - RESTful endpoints for data operations
+   - JWT authentication for security
+
+3. **Database**: MongoDB instance
+   - Document-based storage for flexible schema
+   - Indexes for optimized queries
+
+4. **DevOps**:
+   - Continuous integration with automated testing
+   - Containerized deployment for consistency
+
+## Security Considerations
+
+1. **Authentication**: JWT-based authentication with secure token storage
+2. **Authorization**: Role-based access control for sensitive operations
+3. **Data Protection**: Sanitized inputs and parameterized queries
+4. **Privacy**: Minimal collection of personal information
+
+## Future Enhancements
+
+1. **Advanced Analytics**: Machine learning for deeper financial insights
+2. **Integration Ecosystem**: Connections to banking APIs and financial services
+3. **Mobile Application**: Native mobile experience with shared business logic
+4. **Social Features**: Optional sharing of financial goals and achievements
 
 ## Implementation Details
 
