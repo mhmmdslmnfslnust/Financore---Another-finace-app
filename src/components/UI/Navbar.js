@@ -30,7 +30,7 @@ const Navbar = ({ toggleSidebar }) => {
         {currentUser ? (
           <div className="user-info-container">
             <span className="user-info">{currentUser.username || "User"}</span>
-            <button onClick={handleLogout} className="logout-btn">Logout</button>
+            <button onClick={handleLogout} className="logout-btn"><span>Logout</span></button>
           </div>
         ) : (
           <button onClick={handleLogin} className="login-btn">Sign In</button>
