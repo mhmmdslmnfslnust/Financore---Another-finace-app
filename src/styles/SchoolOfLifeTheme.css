@@ -1,0 +1,28 @@
+/* School of Life inspired theme for Financore */
+
+/* Import Bebas Neue font */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
+:root {
+  /* Color Palette inspired by The School of Life */
+  --background-color: #f9f8f5; /* Soft off-white/beige background */
+  --text-color: #333333; /* Deep charcoal for text */
+  --accent-color: #e6b91e; /* Mustard yellow accent */
+  --secondary-accent: #d35656; /* Warm red as secondary accent */
+  --button-color: #333333; /* Dark gray for buttons */
+  --hover-color: #e6b91e; /* Mustard yellow for hover effects */
+  --light-gray: #eeeeea; /* Light gray for borders and cards */
+  --medium-gray: #a2a2a2; /* Medium gray for secondary text */
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+  background-color: var(--background-color) !important;
+  color: var(--text-color) !important;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+}
+
+/* Add !important to ensure our styles take precedence */
+/* ...remaining CSS with !important added to key properties... */

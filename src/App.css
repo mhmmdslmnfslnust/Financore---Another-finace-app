@@ -6,32 +6,67 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #f8f9fa;
+  padding-top: 30px !important; /* Halved from 60px to 30px */
 }
 
 .app {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
 }
 
 .main-container {
   display: flex;
   flex-grow: 1;
   overflow: hidden;
+  padding-top: 15px !important; /* Halved from 30px to 15px */
 }
 
 .content {
   flex-grow: 1;
   overflow-y: auto;
   transition: margin-left 0.3s;
+  padding-top: 8px !important; /* Halved from 15px to 8px */
 }
 
 .content-with-sidebar {
   margin-left: 250px;
+  padding-top: 8px !important; /* Halved from 15px to 8px */
+  padding-left: 8px !important; /* Halved from 15px to 8px */
+  padding-right: 8px !important; /* Halved from 15px to 8px */
+}
+
+/* Add specific spacing for components that could be under navbar */
+.dashboard-container,
+.transactions-container,
+.goals-container,
+.reports-container {
+  padding-top: 10px !important; /* Halved from 20px to 10px */
+}
+
+/* Ensure headings have proper spacing */
+h1, h2, h3 {
+  margin-top: 0px !important; /* Removed margin as requested */
+  padding-top: 3px !important; /* Approximately halved from 5px to 3px */
+}
+
+/* First child elements need more spacing from top */
+.content > :first-child,
+.content-with-sidebar > :first-child {
+  margin-top: 10px !important; /* Halved from 20px to 10px */
 }
 
 @media (max-width: 768px) {
   .content-with-sidebar {
     margin-left: 0;
+    padding: 20px 8px 10px 8px !important; /* Halved values */
+  }
+  
+  /* Extra spacing for mobile view */
+  .dashboard-container,
+  .transactions-container,
+  .goals-container,
+  .reports-container {
+    padding-top: 12px !important; /* Approximately halved from 25px to 12px */
   }
 }

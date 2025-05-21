@@ -1,17 +1,18 @@
 .navbar {
   height: 60px;
-  background-color: #222;
-  color: white;
+  background-color: var(--background-color);
+  color: var(--text-color);
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 1000;
+  border-bottom: 1px solid var(--light-gray);
 }
 
 .navbar-left {
@@ -33,7 +34,7 @@
   display: block;
   width: 20px;
   height: 2px;
-  background-color: white;
+  background-color: var(--text-color);
   position: relative;
 }
 
@@ -53,9 +54,12 @@
 
 .navbar-brand {
   text-decoration: none;
-  color: white;
-  font-size: 1.5rem;
-  font-weight: bold;
+  color: var(--text-color);
+  font-family: 'Bebas Neue', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .user-info {
@@ -77,9 +81,17 @@
 
 /* Ensure main content has proper margins */
 .page-content {
-  margin-left: 240px; /* Adjust based on your sidebar width */
-  width: 100%;
-  padding-top: 20px; /* Add padding to push content down */
+  margin-left: 250px !important; /* Match sidebar width */
+  width: calc(100% - 250px) !important;
+  padding-top: 20px !important; /* Halved from 40px to 20px */
+  padding-bottom: 10px !important; /* Halved from 20px to 10px */
+  min-height: calc(100vh - 60px) !important;
+}
+
+/* When sidebar is closed, adjust the margin */
+.sidebar-closed .page-content {
+  margin-left: 0 !important;
+  width: 100% !important;
 }
 
 /* Ensure headings aren't cut off */
@@ -87,13 +99,22 @@
 .page-content h2:first-child,
 .page-content h3:first-child,
 .page-content .heading-container:first-child {
-  margin-top: 20px; /* Additional space for headings */
-  padding-top: 10px;
+  margin-top: 10px !important; /* Halved from 20px to 10px */
+  padding-top: 5px !important; /* Halved from 10px to 5px */
+}
+
+/* Ensure all content areas have proper spacing */
+.container, 
+.content-area, 
+section, 
+.panel {
+  padding-top: 5px !important; /* Halved from 10px to 5px */
 }
 
 /* Ensure all page elements have proper spacing from navbar */
 body {
-  padding-top: 60px; /* Same as navbar height */
+  padding-top: 30px !important; /* Halved from 60px to 30px */
+  overflow-x: hidden;
 }
 
 /* Fix for recommendation section appearing above sidebar on mobile */
@@ -181,8 +202,20 @@ body {
 
   /* Add left/right padding to container */
   .page-content {
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-left: 15px; /* Increased from 10px */
+    padding-right: 15px; /* Increased from 10px */
+    padding-top: 30px; /* Ensure mobile also gets the top padding */
+  }
+  
+  /* Mobile-specific content padding */
+  .page-content {
+    margin-left: 0 !important;
+    width: 100% !important;
+    padding: 20px 15px 10px 15px !important; /* Halved from 40px to 20px */
+  }
+  
+  body {
+    padding-top: 30px !important; /* Halved from 60px to 30px */
   }
 }
 
@@ -197,26 +230,36 @@ body {
   gap: 10px;
 }
 
+.user-info {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+}
+
 .login-btn, .logout-btn {
+  font-family: 'Bebas Neue', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
   background-color: transparent;
-  border: 1px solid white;
-  color: white;
-  padding: 5px 10px;
-  border-radius: 4px;
+  border: 1px solid var(--text-color);
+  color: var(--text-color);
+  padding: 6px 14px;
+  border-radius: 0;
   cursor: pointer;
   font-size: 14px;
-  transition: background-color 0.2s;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .login-btn:hover, .logout-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+  color: var(--text-color);
 }
 
 .logout-btn {
-  border-color: #ff6b6b;
-  color: #ff6b6b;
+  border-color: var(--secondary-accent);
+  color: var(--secondary-accent);
 }
 
 .logout-btn:hover {
-  background-color: rgba(255, 107, 107, 0.1);
+  background-color: var(--secondary-accent);
+  color: white;
 }
