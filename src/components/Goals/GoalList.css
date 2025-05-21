@@ -41,6 +41,11 @@
   color: #333;
 }
 
+/* Add dark mode styling for goal card headings */
+.dark-mode .goal-header h3 {
+  color: var(--dark-text-color);
+}
+
 .goal-category {
   font-size: 0.8rem;
   color: #777;
@@ -50,7 +55,8 @@
 }
 
 .dark-mode .goal-category {
-  background-color: var(--dark-category-background);
+  background-color: var(--dark-light-gray);
+  color: var(--dark-text-color);
 }
 
 .goal-amounts {
@@ -81,6 +87,10 @@
   color: var(--dark-text-color);
 }
 
+.dark-mode .amount-item .label {
+  color: var(--dark-medium-gray);
+}
+
 .goal-progress {
   margin-bottom: 15px;
 }
@@ -91,6 +101,11 @@
   border-radius: 4px;
   overflow: hidden;
   margin-bottom: 5px;
+}
+
+/* Add dark mode styling for progress bar background */
+.dark-mode .progress-bar {
+  background-color: var(--dark-progress-bar-background);
 }
 
 .progress-fill {

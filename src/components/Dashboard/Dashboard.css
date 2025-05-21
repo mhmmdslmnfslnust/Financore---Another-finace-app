@@ -7,6 +7,16 @@
   color: #444;
 }
 
+/* Add dark mode styling for h1 headings*/
+.dark-mode .dashboard h1 {
+  color: var(--dark-text-color);
+}
+
+/* .dark-mode .dashboard h1 {
+  color: var(--accent-color);
+} */
+
+
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));

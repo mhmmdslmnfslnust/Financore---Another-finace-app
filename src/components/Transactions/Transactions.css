@@ -14,6 +14,11 @@
   color: #333;
 }
 
+/* Add dark mode styling for h1 headings */
+.dark-mode .transactions-header h1 {
+  color: var(--dark-text-color);
+}
+
 .add-button {
   background-color: #4caf50;
   color: white;
@@ -86,6 +91,15 @@
   border-left: 4px solid #f44336;
 }
 
+/* Add dark mode styling for transaction item borders */
+.dark-mode .transaction-item.income {
+  border-left: 4px solid #66bb6a; /* Lighter, more visible green for dark mode */
+}
+
+.dark-mode .transaction-item.expense {
+  border-left: 4px solid #ef5350; /* Brighter red for dark mode */
+}
+
 .transaction-details {
   flex-grow: 1;
   display: flex;
@@ -118,6 +132,14 @@
 
 .expense .transaction-amount {
   color: #f44336;
+}
+
+.dark-mode .income .transaction-amount {
+  color: #70b974; /* Lighter, more visible green for dark mode */
+}
+
+.dark-mode .expense .transaction-amount {
+  color: #c56866; /* Brighter red for dark mode */
 }
 
 .transaction-secondary {

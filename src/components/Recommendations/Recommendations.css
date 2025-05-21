@@ -7,6 +7,11 @@
   color: #333;
 }
 
+/* Add dark mode styling for h1 headings */
+.dark-mode .recommendations-page h1 {
+  color: var(--dark-text-color);
+}
+
 .recommendation-section {
   background-color: white;
   border-radius: 8px;
@@ -23,6 +28,12 @@
   border-bottom: 1px solid #eee;
 }
 
+/* Add dark mode styling for section headings */
+.dark-mode .recommendation-section h2 {
+  color: var(--dark-text-color);
+  border-bottom-color: var(--dark-light-gray);
+}
+
 .recommendation-content {
   padding: 10px 0;
 }
@@ -31,6 +42,21 @@
   list-style-type: none;
   padding: 0;
   margin: 0;
+  padding-inline-start: 0; /* Explicitly set to zero to override browser defaults */
+}
+
+/* Target recommendations list in dashboard specifically */
+.dashboard-card .recommendations-list,
+.recommendations-card .recommendations-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  padding-inline-start: 0;
+}
+
+/* Remove list markers from recommendation items */
+.recommendation-item {
+  list-style: none;
 }
 
 .recommendation-item {
@@ -53,6 +79,11 @@
 .recommendation-item.info {
   background-color: #e3f2fd;
   border-left: 4px solid #2196F3;
+}
+
+.dark-mode .recommendation-item.info {
+  background-color: var(--dark-light-gray);
+  border-left: 4px solid #90caf9;
 }
 
 .recommendation-item.tip {

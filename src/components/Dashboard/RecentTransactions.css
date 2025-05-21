@@ -53,14 +53,24 @@
   color: #2196F3;
   text-decoration: none;
   font-weight: 500;
+  transition: color 0.3s ease;
 }
 
 .dark-mode .view-all {
   color: #004384;
+  transition: color 0.3s ease;
 }
 
 .view-all:hover {
   text-decoration: underline;
+  text-decoration-color: var(--hover-color);
+  color: var(--hover-color);
+}
+
+.dark-mode .view-all:hover {
+  text-decoration: underline;
+  text-decoration-color: var(--hover-color);
+  color: var(--hover-color);
 }
 
 .no-data {
