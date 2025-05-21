@@ -36,6 +36,35 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
+  width: 100%;
+  overflow: hidden; /* Prevent overflow */
+}
+
+/* Ensure canvas stays within wrapper */
+.chart-wrapper canvas {
+  max-width: 100% !important;
+  max-height: 100% !important;
+  width: auto !important;
+  height: auto !important;
+  object-fit: contain;
+}
+
+/* Fix for chart.js specific issues */
+.chart-wrapper canvas[role="img"] {
+  position: relative !important;
+  left: 0 !important;
+  top: 0 !important;
+}
+
+/* Specific adjustments for different chart types */
+.chart-card.full-width .chart-wrapper {
+  height: 350px; /* Give more height to full-width charts */
+}
+
+/* Dark mode adjustments for charts */
+.dark-mode .chart-wrapper canvas {
+  filter: brightness(0.9); /* Slightly dim to match dark theme */
 }
 
 /* Add styles for chart text to ensure visibility in dark mode */

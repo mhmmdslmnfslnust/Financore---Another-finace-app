@@ -6,11 +6,19 @@
   margin-bottom: 20px;
 }
 
+.dark-mode .transaction-form-container{
+  background-color: var(--dark-card-background);
+} 
+
 .transaction-form-container h2 {
   margin-top: 0;
   margin-bottom: 20px;
   color: #333;
   font-size: 1.5rem;
+}
+
+.dark-mode .transaction-form-container h2 {
+  color: var(--dark-text-color);
 }
 
 .transaction-form {

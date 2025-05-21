@@ -32,6 +32,10 @@
   font-weight: 500;
 }
 
+.dark-mode .form-group label {
+  color: var(--dark-text-color);
+}
+
 .form-group input {
   width: 100%;
   padding: 10px;
