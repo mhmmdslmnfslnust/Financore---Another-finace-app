@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { transactionService } from '../../services/apiService';
 import TransactionForm from './TransactionForm';
+import ConfirmationDialog from '../UI/ConfirmationDialog';
 import './Transactions.css';
 
 const Transactions = () => {
@@ -10,6 +11,11 @@ const Transactions = () => {
   const [isAdding, setIsAdding] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [currentTransaction, setCurrentTransaction] = useState(null);
+  // New state for delete confirmation
+  const [deleteConfirmation, setDeleteConfirmation] = useState({
+    isOpen: false,
+    transactionId: null
+  });
 
   // Load transactions
   useEffect(() => {
@@ -66,15 +72,33 @@ const Transactions = () => {
     }
   };
 
+  const showDeleteConfirmation = (id) => {
+    setDeleteConfirmation({
+      isOpen: true,
+      transactionId: id
+    });
+  };
+
+  const hideDeleteConfirmation = () => {
+    setDeleteConfirmation({
+      isOpen: false,
+      transactionId: null
+    });
+  };
+
   const handleDeleteTransaction = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this transaction?')) {
-      return;
-    }
-    
+    // Don't use window.confirm anymore - we'll use our custom dialog
+    showDeleteConfirmation(id);
+  };
+
+  const confirmDeleteTransaction = async () => {
     try {
       setIsLoading(true);
       setError(null);
-      await transactionService.delete(id);
+      await transactionService.delete(deleteConfirmation.transactionId);
+      
+      // Hide the confirmation dialog
+      hideDeleteConfirmation();
       
       // Reload transactions
       await loadTransactions();
@@ -82,6 +106,7 @@ const Transactions = () => {
       console.error('Error deleting transaction:', err);
       setError('Failed to delete transaction. Please try again.');
       setIsLoading(false);
+      hideDeleteConfirmation();
     }
   };
 
@@ -165,6 +190,18 @@ const Transactions = () => {
           ))
         )}
       </div>
+      
+      {/* Add the confirmation dialog component */}
+      <ConfirmationDialog
+        isOpen={deleteConfirmation.isOpen}
+        title="Delete Transaction"
+        message="Are you sure you want to delete this transaction? This action cannot be undone."
+        onConfirm={confirmDeleteTransaction}
+        onCancel={hideDeleteConfirmation}
+        confirmText="Delete"
+        cancelText="Cancel"
+        confirmStyle="danger"
+      />
     </div>
   );
 };

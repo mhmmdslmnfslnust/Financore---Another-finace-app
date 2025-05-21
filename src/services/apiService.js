@@ -107,7 +107,10 @@ export const goalService = {
   getById: (id) => api.get(`/goals/${id}`),
   add: (goal) => api.post('/goals', goal),
   update: (id, goal) => api.put(`/goals/${id}`, goal),
-  delete: (id) => api.delete(`/goals/${id}`),
+  delete: (id) => {
+    console.log('Sending delete request for goal ID:', id);
+    return api.delete(`/goals/${id}`);
+  },
   contribute: (id, amount) => api.put(`/goals/${id}/contribute`, { amount })
 };
 
