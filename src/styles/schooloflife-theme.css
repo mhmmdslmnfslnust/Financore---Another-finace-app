@@ -281,6 +281,121 @@ label {
   }
 }
 
+/* New styles for very small screens - specifically for navbar */
+@media (max-width: 440px) {
+  /* Complete navbar reorganization */
+  .navbar {
+    display: grid;
+    grid-template-areas:
+      "brand brand"
+      "left right";
+    grid-template-columns: auto auto;
+    padding: 5px;
+    justify-content: space-between;
+  }
+  
+  .navbar-brand,
+  .navbar-left .navbar-brand {
+    grid-area: brand;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 5px;
+    padding: 0;
+    /* Removed font-size reduction to keep original size */
+  }
+  
+  .navbar-left {
+    grid-area: left;
+    display: flex;
+    align-items: center;
+  }
+  
+  .navbar-right {
+    grid-area: right;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  
+  /* Menu toggle compact styling */
+  .menu-toggle {
+    padding: 5px !important;
+    margin-right: 5px;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Ultra-compact styling for logout */
+  .logout-btn {
+    background: none !important;
+    border: none !important;
+    color: var(--text-color) !important;
+    font-size: 16px !important;
+    padding: 0 !important;
+    margin: 0 5px !important;
+    width: 28px !important;
+    height: 28px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  /* Replace text with icon */
+  .logout-btn span {
+    display: none;
+  }
+  
+  .logout-btn::before {
+    content: "👤";
+    font-size: 16px;
+  }
+  
+  /* Style username to show more characters */
+  .user-info {
+    max-width: 120px; /* Increased from 80px to show longer usernames */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-right: 2px;
+    font-size: 0.85rem;
+  }
+  
+  /* Compact dark mode toggle */
+  .dark-mode-toggle {
+    width: 28px;
+    height: 28px;
+    margin: 0 5px;
+    padding: 0;
+  }
+  
+  .dark-mode-toggle svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+/* Even smaller screens - extreme compactness */
+@media (max-width: 350px) {
+  .user-info {
+    max-width: 90px; /* Increased from 60px to show more of the username */
+    font-size: 0.8rem;
+  }
+  
+  .logout-btn,
+  .menu-toggle,
+  .dark-mode-toggle {
+    width: 24px !important;
+    height: 24px !important;
+  }
+  
+  .logout-btn::before {
+    font-size: 14px;
+  }
+}
+
 /* Additional dark mode adjustments for various components */
 .dark-mode input, 
 .dark-mode textarea, 
