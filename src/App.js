@@ -8,6 +8,7 @@ import Reports from './components/Reports/Reports';
 import Navbar from './components/UI/Navbar';
 import Sidebar from './components/UI/Sidebar';
 import './App.css';
+import './styles/SchoolOfLifeTheme.css';
 
 import { AuthProvider } from './context/AuthContext';
 import Login from './pages/Login';
