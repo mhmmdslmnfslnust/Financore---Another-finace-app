@@ -16,6 +16,10 @@
   transition: transform 0.2s;
 }
 
+.dark-mode .goal-card {
+  background-color: var(--dark-card-background);
+}
+
 .goal-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
@@ -45,6 +49,10 @@
   border-radius: 12px;
 }
 
+.dark-mode .goal-category {
+  background-color: var(--dark-category-background);
+}
+
 .goal-amounts {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -67,6 +75,10 @@
   font-size: 1rem;
   font-weight: 500;
   color: #333;
+}
+
+.dark-mode .amount-item .value {
+  color: var(--dark-text-color);
 }
 
 .goal-progress {

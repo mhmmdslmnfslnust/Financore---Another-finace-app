@@ -104,6 +104,10 @@
   color: #333;
 }
 
+.dark-mode .transaction-category {
+  color: var(--dark-text-color);
+}
+
 .transaction-amount {
   font-weight: 600;
 }
