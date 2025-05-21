@@ -44,6 +44,10 @@
   color: #007bff;
 }
 
+.dark-mode .goal-percentage {
+  color: #004384;
+}
+
 .add-goal-button {
   display: inline-block;
   margin-top: 15px;

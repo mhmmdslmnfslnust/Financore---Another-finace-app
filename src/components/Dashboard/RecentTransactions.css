@@ -55,6 +55,10 @@
   font-weight: 500;
 }
 
+.dark-mode .view-all {
+  color: #004384;
+}
+
 .view-all:hover {
   text-decoration: underline;
 }

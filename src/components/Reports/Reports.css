@@ -4,7 +4,7 @@
 
 .reports-page h1 {
   margin-bottom: 20px;
-  color: #333;
+  color: var(--text-color); /* Use theme variable instead of hardcoded #333 */
 }
 
 .chart-container {
@@ -14,10 +14,17 @@
 }
 
 .chart-card {
-  background-color: white;
+  background-color: var(--card-background, white); /* Use theme variable with white fallback */
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 20px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Add transition for smooth theme change */
+}
+
+/* Add dark mode specific styles */
+.dark-mode .chart-card {
+  background-color: var(--dark-card-background) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .chart-card.full-width {
@@ -29,6 +36,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+/* Add styles for chart text to ensure visibility in dark mode */
+.dark-mode .chart-card h2,
+.dark-mode .chart-card text {
+  color: var(--dark-text-color);
 }
 
 @media (max-width: 768px) {

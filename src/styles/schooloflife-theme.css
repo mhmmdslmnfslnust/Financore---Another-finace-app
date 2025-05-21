@@ -4,7 +4,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
 
 :root {
-  /* Color Palette inspired by The School of Life */
+  /* Color Palette inspired by The School of Life - Light Mode */
   --background-color: #f9f8f5; /* Soft off-white/beige background */
   --text-color: #333333; /* Deep charcoal for text */
   --accent-color: #e6b91e; /* Mustard yellow accent */
@@ -13,6 +13,24 @@
   --hover-color: #e6b91e; /* Mustard yellow for hover effects */
   --light-gray: #eeeeea; /* Light gray for borders and cards */
   --medium-gray: #a2a2a2; /* Medium gray for secondary text */
+  
+  /* Dark Mode Colors */
+  --dark-background-color: #1c1c1c;
+  --dark-text-color: #8b8b8b;
+  --dark-light-gray: #2a2a2a;
+  --dark-medium-gray: #6e6e6e;
+  --dark-card-background: #252525;
+  --dark-sidebar-background: #1e1e1e;
+}
+
+/* Dark mode styles */
+.dark-mode {
+  --background-color: var(--dark-background-color);
+  --text-color: var(--dark-text-color);
+  --light-gray: var(--dark-light-gray);
+  --medium-gray: var(--dark-medium-gray);
+  --card-background: var(--dark-card-background);
+  --sidebar-background: var(--dark-sidebar-background);
 }
 
 /* Add !important to critical styles to ensure they override other CSS */
@@ -21,6 +39,7 @@ body {
   background-color: var(--background-color) !important;
   color: var(--text-color) !important;
   line-height: 1.6 !important;
+  transition: background-color 0.3s ease, color 0.3s ease !important;
 }
 
 /* Typography */
@@ -30,7 +49,6 @@ h1, h2, h3, h4, h5, h6 {
   text-transform: uppercase !important;
   font-weight: 400 !important;
   letter-spacing: 0.5px !important;
-  margin-bottom: 1rem;
 }
 
 h1 {
@@ -125,11 +143,17 @@ label {
 
 /* Cards and containers */
 .card {
-  background-color: white;
+  background-color: var(--card-background, white);
   border: none;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   padding: 24px;
   margin-bottom: 24px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dark-mode .card {
+  background-color: var(--dark-card-background);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
 .container {
@@ -184,6 +208,58 @@ label {
   margin: 24px 0;
 }
 
+/* Dark mode toggle button */
+.dark-mode-toggle {
+  background: none;
+  border: none;
+  color: var(--text-color);
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  margin-right: 15px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.dark-mode-toggle:hover {
+  transform: scale(1.1);
+}
+
+.dark-mode-toggle svg {
+  width: 20px;
+  height: 20px;
+  transition: opacity 0.3s ease, transform 0.5s ease;
+}
+
+.dark-mode-toggle .sun-icon {
+  position: absolute;
+  opacity: 0;
+  transform: rotate(90deg);
+}
+
+.dark-mode-toggle .moon-icon {
+  opacity: 1;
+}
+
+.dark-mode .dark-mode-toggle .sun-icon {
+  opacity: 1;
+  transform: rotate(0);
+}
+
+.dark-mode .dark-mode-toggle .moon-icon {
+  opacity: 0;
+  transform: rotate(-90deg);
+}
+
+/* Ensure transitions for theme changes */
+.navbar, .sidebar, .page-content, button, a, input, textarea, select, .card {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease !important;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   h1 {
@@ -202,3 +278,70 @@ label {
     padding: 0 16px;
   }
 }
+
+/* Additional dark mode adjustments for various components */
+.dark-mode input, 
+.dark-mode textarea, 
+.dark-mode select {
+  background-color: var(--dark-light-gray);
+  border-color: var(--dark-medium-gray);
+  color: var(--dark-text-color);
+}
+
+.dark-mode .bg-light {
+  background-color: var(--dark-light-gray) !important;
+}
+
+.dark-mode .header {
+  background-color: var(--dark-sidebar-background);
+}
+
+/* Ensure all containers respect dark mode */
+.dark-mode .container-fluid,
+.dark-mode .container,
+.dark-mode .col,
+.dark-mode [class^="col-"],
+.dark-mode .row {
+  background-color: transparent;
+}
+
+/* Summary Items */
+.summary-item {
+  padding: 15px;
+  border-radius: 4px;
+  text-align: center;
+  transition: background-color 0.3s ease, color 0.3s ease, opacity 0.3s ease;
+}
+
+/* Dark mode styles for summary items */
+.dark-mode .summary-item {
+  background-color: rgba(42, 42, 42, 0.8) !important; /* Darker with transparency */
+  color: var(--dark-text-color) !important;
+  border-color: var(--dark-light-gray) !important;
+}
+
+/* For summary items with different background colors */
+/* Add more variations of class names to catch all possibilities */
+.dark-mode .summary-item.income {
+  background-color: rgba(39, 74, 47, 0.8) !important; /* Dark green with transparency */
+}
+
+.dark-mode .summary-item.expenses{
+  background-color: rgba(74, 39, 39, 0.8) !important; /* Dark red with transparency */
+}
+
+.dark-mode .summary-item.balance{
+  background-color: rgba(46, 53, 74, 0.8) !important; /* Dark blue with transparency */
+}
+
+/* Adding specific classes for savings rate */
+.dark-mode .summary-item.savings-rate{
+  background-color: rgba(24, 106, 119, 0.8) !important; /* Dark teal with 0.8 opacity */
+  /* background-color: #e0f7fac4 !important; Light teal with transparency */
+}
+
+.dark-mode .summary-item h3 p {
+  color: rgba(139, 139, 139, 0.564)!important;
+  border-color: var(--dark-light-gray) !important;
+}
+
