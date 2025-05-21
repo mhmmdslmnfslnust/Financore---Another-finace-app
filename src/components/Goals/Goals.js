@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { goalService } from '../../services/apiService';
 import GoalList from './GoalList';
 import GoalForm from './GoalForm';
+import ConfirmationDialog from '../UI/ConfirmationDialog';
 import './Goals.css';
 
 const Goals = () => {
@@ -11,6 +12,11 @@ const Goals = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [currentGoal, setCurrentGoal] = useState(null);
   const [error, setError] = useState(null);
+  // New state for delete confirmation
+  const [deleteConfirmation, setDeleteConfirmation] = useState({
+    isOpen: false,
+    goalId: null
+  });
   
   // Load goals from MongoDB via API
   useEffect(() => {
@@ -56,15 +62,46 @@ const Goals = () => {
     }
   };
   
-  const handleDeleteGoal = async (id) => {
-    if (window.confirm('Are you sure you want to delete this goal?')) {
-      try {
-        await goalService.delete(id);
-        await loadGoals();
-      } catch (err) {
-        console.error('Error deleting goal:', err);
-        alert('Failed to delete goal');
+  // Show deletion confirmation dialog
+  const showDeleteConfirmation = (id) => {
+    setDeleteConfirmation({
+      isOpen: true,
+      goalId: id
+    });
+  };
+
+  // Hide deletion confirmation dialog
+  const hideDeleteConfirmation = () => {
+    setDeleteConfirmation({
+      isOpen: false,
+      goalId: null
+    });
+  };
+  
+  // Replace window.confirm with custom dialog
+  const handleDeleteGoal = (id) => {
+    showDeleteConfirmation(id);
+  };
+  
+  // Actual deletion after confirmation
+  const confirmDeleteGoal = async () => {
+    try {
+      setIsLoading(true);
+      console.log('Attempting to delete goal with ID:', deleteConfirmation.goalId);
+      await goalService.delete(deleteConfirmation.goalId);
+      console.log('Goal deletion successful, reloading goals');
+      await loadGoals();
+      hideDeleteConfirmation();
+    } catch (err) {
+      console.error('Error deleting goal:', err);
+      // Add more detailed error information
+      if (err.response) {
+        console.error('Server response:', err.response.data);
+        console.error('Status code:', err.response.status);
       }
+      alert('Failed to delete goal. Check console for details.');
+      hideDeleteConfirmation();
+      setIsLoading(false);
     }
   };
   
@@ -126,6 +163,18 @@ const Goals = () => {
         onEdit={startEditing}
         onDelete={handleDeleteGoal}
         onContribute={handleContributeToGoal}
+      />
+      
+      {/* Add the confirmation dialog component */}
+      <ConfirmationDialog
+        isOpen={deleteConfirmation.isOpen}
+        title="Delete Financial Goal"
+        message="Are you sure you want to delete this financial goal? This action cannot be undone."
+        onConfirm={confirmDeleteGoal}
+        onCancel={hideDeleteConfirmation}
+        confirmText="Delete"
+        cancelText="Cancel"
+        confirmStyle="danger"
       />
     </div>
   );

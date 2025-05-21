@@ -130,11 +130,7 @@ const GoalList = ({ goals, onEdit, onDelete, onContribute }) => {
                 </button>
                 <button 
                   className="delete-btn" 
-                  onClick={() => {
-                    if (window.confirm('Are you sure you want to delete this goal?')) {
-                      onDelete(goal.id);
-                    }
-                  }}
+                  onClick={() => onDelete(goal._id || goal.id)} // Use _id if available, fall back to id
                 >
                   Delete
                 </button>
