@@ -1,7 +1,0 @@
-services:
-  - type: web
-    name: financore-client
-    env: node
-    buildCommand: npm install && npm run build
-    startCommand: npm start
-    src: ./  # Adjust if your frontend is in a subfolder
