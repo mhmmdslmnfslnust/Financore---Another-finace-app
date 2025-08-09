@@ -64,6 +64,27 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Register function
+  const register = async (userData) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await authService.register(userData);
+      if (response.data && response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        setCurrentUser(response.data.user);
+        return true;
+      }
+      return false;
+    } catch (err) {
+      console.error('Registration failed:', err);
+      setError(err.response?.data?.error || 'Registration failed');
+      throw err; // Re-throw to let the component handle it
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Logout function
   const logout = () => {
     localStorage.removeItem('token');
@@ -79,6 +100,7 @@ export const AuthProvider = ({ children }) => {
         loading,
         error,
         login,
+        register,
         logout
       }}
     >

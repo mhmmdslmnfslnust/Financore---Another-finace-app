@@ -26,7 +26,10 @@ function App() {
 
   return (
     <AuthProvider>
-      <Router>
+      <Router future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true
+      }}>
         <div className="app">
           <Navbar toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
           <div className="main-container">

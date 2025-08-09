@@ -9,26 +9,31 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [formError, setFormError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { register, error } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormError('');
+    setIsSubmitting(true);
 
     // Basic validation
     if (!username || !email || !password || !confirmPassword) {
       setFormError('Please fill in all fields');
+      setIsSubmitting(false);
       return;
     }
 
     if (password !== confirmPassword) {
       setFormError('Passwords do not match');
+      setIsSubmitting(false);
       return;
     }
 
     if (password.length < 6) {
       setFormError('Password must be at least 6 characters');
+      setIsSubmitting(false);
       return;
     }
 
@@ -37,16 +42,22 @@ const Register = () => {
       console.log('Submitting registration form:', { username, email });
       
       // Attempt to register
-      await register({ username, email, password });
+      const success = await register({ username, email, password });
       
       // If successful, navigate to dashboard
-      navigate('/dashboard');
+      if (success) {
+        navigate('/dashboard');
+      } else {
+        setFormError('Registration failed. Please try again.');
+      }
     } catch (err) {
       console.error('Registration error in component:', err);
       
       // Display the error message from the server or a default message
       const errorMessage = err.response?.data?.error || err.message || 'Registration failed. Please try again.';
       setFormError(errorMessage);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -107,7 +118,9 @@ const Register = () => {
             />
           </div>
           
-          <button type="submit" className="login-btn">Register</button>
+          <button type="submit" className="login-btn" disabled={isSubmitting}>
+            {isSubmitting ? 'Registering...' : 'Register'}
+          </button>
         </form>
         
         <div className="login-footer">

@@ -1,4 +1,11 @@
 import axios from 'axios';
+import { 
+  mockAuthService, 
+  mockTransactionService, 
+  mockGoalService, 
+  mockBudgetService 
+} from './mockAuthService';
+import { USE_MOCK_API } from '../config/apiConfig';
 
 const API_URL = 'http://localhost:5000/api';
 
@@ -78,9 +85,18 @@ api.interceptors.response.use(
   }
 );
 
-// Auth API Service
+// Auth API Service with mock fallback
 export const authService = {
-  login: (credentials) => {
+  login: async (credentials) => {
+    if (USE_MOCK_API) {
+      try {
+        const response = await mockAuthService.login(credentials.email, credentials.password);
+        return { data: response };
+      } catch (error) {
+        throw new Error(error.message);
+      }
+    }
+    
     // Ensure credentials is a proper object with email and password
     if (!credentials || typeof credentials !== 'object') {
       credentials = { email: '', password: '' };
@@ -88,39 +104,226 @@ export const authService = {
     
     return api.post('/auth/login', credentials);
   },
-  register: (userData) => api.post('/auth/register', userData),
-  getCurrentUser: () => api.get('/auth/me')
+  
+  register: async (userData) => {
+    if (USE_MOCK_API) {
+      try {
+        const response = await mockAuthService.register(userData);
+        return { data: response };
+      } catch (error) {
+        const mockError = new Error(error.message);
+        mockError.response = { data: { error: error.message } };
+        throw mockError;
+      }
+    }
+    
+    return api.post('/auth/register', userData);
+  },
+  
+  getCurrentUser: async () => {
+    if (USE_MOCK_API) {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await mockAuthService.getMe(token);
+        return { data: response };
+      } catch (error) {
+        throw new Error(error.message);
+      }
+    }
+    
+    return api.get('/auth/me');
+  }
 };
 
-// Transaction API Service
+// Transaction API Service with mock fallback
 export const transactionService = {
-  getAll: () => api.get('/transactions'),
-  getById: (id) => api.get(`/transactions/${id}`),
-  add: (transaction) => api.post('/transactions', transaction),
-  update: (id, transaction) => api.put(`/transactions/${id}`, transaction),
-  delete: (id) => api.delete(`/transactions/${id}`)
+  getAll: async () => {
+    if (USE_MOCK_API) {
+      try {
+        const response = await mockTransactionService.getAll();
+        return { data: response };
+      } catch (error) {
+        throw new Error(error.message);
+      }
+    }
+    return api.get('/transactions');
+  },
+  
+  getById: async (id) => {
+    if (USE_MOCK_API) {
+      try {
+        const response = await mockTransactionService.getById(id);
+        return { data: response };
+      } catch (error) {
+        throw new Error(error.message);
+      }
+    }
+    return api.get(`/transactions/${id}`);
+  },
+  
+  add: async (transaction) => {
+    if (USE_MOCK_API) {
+      try {
+        const response = await mockTransactionService.add(transaction);
+        return { data: response };
+      } catch (error) {
+        throw new Error(error.message);
+      }
+    }
+    return api.post('/transactions', transaction);
+  },
+  
+  update: async (id, transaction) => {
+    if (USE_MOCK_API) {
+      try {
+        const response = await mockTransactionService.update(id, transaction);
+        return { data: response };
+      } catch (error) {
+        throw new Error(error.message);
+      }
+    }
+    return api.put(`/transactions/${id}`, transaction);
+  },
+  
+  delete: async (id) => {
+    if (USE_MOCK_API) {
+      try {
+        const response = await mockTransactionService.delete(id);
+        return { data: response };
+      } catch (error) {
+        throw new Error(error.message);
+      }
+    }
+    return api.delete(`/transactions/${id}`);
+  }
 };
 
-// Goal API Service
+// Goal API Service with mock fallback
 export const goalService = {
-  getAll: () => api.get('/goals'),
-  getById: (id) => api.get(`/goals/${id}`),
-  add: (goal) => api.post('/goals', goal),
-  update: (id, goal) => api.put(`/goals/${id}`, goal),
-  delete: (id) => {
+  getAll: async () => {
+    if (USE_MOCK_API) {
+      try {
+        const response = await mockGoalService.getAll();
+        return { data: response };
+      } catch (error) {
+        throw new Error(error.message);
+      }
+    }
+    return api.get('/goals');
+  },
+  
+  getById: async (id) => {
+    if (USE_MOCK_API) {
+      try {
+        const response = await mockGoalService.getById(id);
+        return { data: response };
+      } catch (error) {
+        throw new Error(error.message);
+      }
+    }
+    return api.get(`/goals/${id}`);
+  },
+  
+  add: async (goal) => {
+    if (USE_MOCK_API) {
+      try {
+        const response = await mockGoalService.add(goal);
+        return { data: response };
+      } catch (error) {
+        throw new Error(error.message);
+      }
+    }
+    return api.post('/goals', goal);
+  },
+  
+  update: async (id, goal) => {
+    if (USE_MOCK_API) {
+      try {
+        const response = await mockGoalService.update(id, goal);
+        return { data: response };
+      } catch (error) {
+        throw new Error(error.message);
+      }
+    }
+    return api.put(`/goals/${id}`, goal);
+  },
+  
+  delete: async (id) => {
+    if (USE_MOCK_API) {
+      try {
+        console.log('Deleting goal with mock service, ID:', id);
+        const response = await mockGoalService.delete(id);
+        return { data: response };
+      } catch (error) {
+        throw new Error(error.message);
+      }
+    }
     console.log('Sending delete request for goal ID:', id);
     return api.delete(`/goals/${id}`);
   },
-  contribute: (id, amount) => api.put(`/goals/${id}/contribute`, { amount })
+  
+  contribute: async (id, amount) => {
+    if (USE_MOCK_API) {
+      try {
+        const response = await mockGoalService.contribute(id, amount);
+        return { data: response };
+      } catch (error) {
+        throw new Error(error.message);
+      }
+    }
+    return api.put(`/goals/${id}/contribute`, { amount });
+  }
 };
 
-// Budget API Service
+// Budget API Service with mock fallback
 export const budgetService = {
-  getAll: () => api.get('/budgets'),
-  getById: (id) => api.get(`/budgets/${id}`),
-  add: (budget) => api.post('/budgets', budget),
-  update: (id, budget) => api.put(`/budgets/${id}`, budget),
-  delete: (id) => api.delete(`/budgets/${id}`)
+  getAll: async () => {
+    if (USE_MOCK_API) {
+      try {
+        const response = await mockBudgetService.getAll();
+        return { data: response };
+      } catch (error) {
+        throw new Error(error.message);
+      }
+    }
+    return api.get('/budgets');
+  },
+  
+  getById: async (id) => {
+    if (USE_MOCK_API) {
+      // Mock implementation
+      return { data: { success: true, data: { id, name: 'Sample Budget' } } };
+    }
+    return api.get(`/budgets/${id}`);
+  },
+  
+  add: async (budget) => {
+    if (USE_MOCK_API) {
+      try {
+        const response = await mockBudgetService.add(budget);
+        return { data: response };
+      } catch (error) {
+        throw new Error(error.message);
+      }
+    }
+    return api.post('/budgets', budget);
+  },
+  
+  update: async (id, budget) => {
+    if (USE_MOCK_API) {
+      // Mock implementation
+      return { data: { success: true, data: { id, ...budget } } };
+    }
+    return api.put(`/budgets/${id}`, budget);
+  },
+  
+  delete: async (id) => {
+    if (USE_MOCK_API) {
+      // Mock implementation
+      return { data: { success: true, message: 'Budget deleted' } };
+    }
+    return api.delete(`/budgets/${id}`);
+  }
 };
 
 export default api;
