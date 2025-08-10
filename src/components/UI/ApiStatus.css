@@ -1,0 +1,41 @@
+.api-status {
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.api-status-orange {
+  background-color: #fff3cd;
+  border: 1px solid #ffeaa7;
+  color: #856404;
+}
+
+.api-status-green {
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  color: #155724;
+}
+
+.status-badge {
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.status-message {
+  flex: 1;
+  font-size: 11px;
+}
+
+@media (max-width: 768px) {
+  .api-status {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}

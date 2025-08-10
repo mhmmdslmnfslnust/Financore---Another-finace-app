@@ -4,6 +4,7 @@ import { transactionService, goalService } from '../../services/apiService';
 import FinancialSummary from './FinancialSummary';
 import RecentTransactions from './RecentTransactions';
 import GoalsOverview from './GoalsOverview';
+import ApiStatus from '../UI/ApiStatus';
 import './Dashboard.css';
 import './TopRecommendations.css'; // Add this import to include the recommendation styles
 
@@ -115,6 +116,8 @@ const Dashboard = () => {
   return (
     <div className="dashboard">
       <h1>Financial Dashboard</h1>
+      
+      <ApiStatus />
 
       <div className="dashboard-grid">
         <FinancialSummary
